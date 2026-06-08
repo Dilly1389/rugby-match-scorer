@@ -175,13 +175,12 @@
 </head>
 <body>
 <div class="app">
-  <div class="tabs">
+  <div class="tabs" id="app-tabs">
     <div class="tab active" onclick="switchTab('scorer')"><i class="ti ti-pencil"></i> Scorer</div>
     <div class="tab" onclick="switchTab('fixtures')"><i class="ti ti-calendar"></i> Fixtures</div>
     <div class="tab" onclick="switchTab('spectator')"><i class="ti ti-eye"></i> Spectator</div>
   </div>
 
-  <!-- SCORER -->
   <div id="view-scorer" class="view active">
     <div class="board">
       <div class="fixture-picker">
@@ -194,7 +193,6 @@
     </div>
   </div>
 
-  <!-- FIXTURES -->
   <div id="view-fixtures" class="view">
     <div class="fixtures-wrap">
       <div class="add-fixture-card">
@@ -220,7 +218,6 @@
     </div>
   </div>
 
-  <!-- SPECTATOR -->
   <div id="view-spectator" class="view">
     <div class="spectator">
       <div id="spec-fixture-select">
@@ -228,7 +225,7 @@
         <div class="spec-fixture-list" id="spec-fixture-list"><div class="empty-fixtures">No fixtures scheduled yet</div></div>
       </div>
       <div id="spec-score-panel" class="spec-score-panel">
-        <button class="spec-back-btn" onclick="specBack()"><i class="ti ti-arrow-left"></i> All fixtures</button>
+        <button class="spec-back-btn" id="spec-back-button" onclick="specBack()"><i class="ti ti-arrow-left"></i> All fixtures</button>
         <div class="spec-meta">
           <div class="spec-league" id="spec-match-label">Rugby Union</div>
           <div class="spec-timer" id="spec-timer">00:00</div>
@@ -265,6 +262,20 @@
   function pad(n){return String(n).padStart(2,'0');}
   function fxTime(fx){return pad(Math.floor((fx.seconds||0)/60))+':'+pad((fx.seconds||0)%60);}
   function getActiveFx(){return fixtures.find(f=>f.id===activeFixtureId)||null;}
+
+  function switchTab(tabName) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    
+    const viewEl = document.getElementById('view-' + tabName);
+    if (viewEl) viewEl.classList.add('active');
+    
+    // Find matching tab button by text or click target context
+    const tabBtns = document.querySelectorAll('.tab');
+    if (tabName === 'scorer') tabBtns[0].classList.add('active');
+    if (tabName === 'fixtures') tabBtns[1].classList.add('active');
+    if (tabName === 'spectator') tabBtns[2].classList.add('active');
+  }
 
   function renderScorerPickList(){
     const el=document.getElementById('scorer-pick-list');
@@ -352,12 +363,14 @@
     if(running)stopTimer();
     activeFixtureId=id;
     renderScorerPickList();renderScorerActive();
+    saveToStorage();
   }
 
   function stopTimer(){
     running=false;clearInterval(interval);
     const fx=getActiveFx();if(fx)fx.running=false;
     updateStartBtn();renderFixtureList();renderScorerPickList();renderSpecFixtureList();
+    saveToStorage();
   }
 
   function toggleTimer(){
@@ -382,6 +395,7 @@
           stopTimer();renderEvents();renderSpecPanel();
         }
         if(specViewingId===fx.id)renderSpecPanel();
+        saveToStorage();
       },1000);
     } else {stopTimer();}
   }
@@ -391,6 +405,7 @@
     if(running)stopTimer();
     fx.seconds=0;fx.half=fx.half===1?2:1;fx.halfTime=false;
     renderScorerActive();if(specViewingId===fx.id)renderSpecPanel();
+    saveToStorage();
   }
 
   function confirmReset(){
@@ -400,6 +415,7 @@
     fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;
     renderScorerActive();renderFixtureList();renderScorerPickList();renderSpecFixtureList();
     if(specViewingId===fx.id)renderSpecPanel();
+    saveToStorage();
   }
 
   function addScore(team,pts){
@@ -412,6 +428,7 @@
     const sd=document.getElementById('score'+team);if(sd)sd.textContent=team===1?fx.score1:fx.score2;
     renderEvents();renderFixtureList();renderScorerPickList();renderSpecFixtureList();
     if(specViewingId===fx.id)renderSpecPanel();
+    saveToStorage();
   }
 
   function renderFixtureList(){
@@ -451,6 +468,7 @@
     document.getElementById('fx-comp').value='';
     document.getElementById('fx-duration').value='40';
     renderFixtureList();renderScorerPickList();renderSpecFixtureList();
+    saveToStorage();
   }
 
   function deleteFixture(id){
@@ -458,6 +476,7 @@
     if(specViewingId===id){specViewingId=null;document.getElementById('spec-score-panel').style.display='none';document.getElementById('spec-fixture-select').style.display='block';}
     fixtures=fixtures.filter(f=>f.id!==id);
     renderFixtureList();renderScorerPickList();renderSpecFixtureList();
+    saveToStorage();
   }
 
   function renderSpecFixtureList(){
@@ -475,50 +494,91 @@
     }).join('');
   }
 
-  function renderSpecPanel(){
-    const fx=fixtures.find(f=>f.id===specViewingId);if(!fx)return;
-    document.getElementById('spec-timer').textContent=fxTime(fx);
-    document.getElementById('spec-half').textContent=fx.half===1?'1st Half':'2nd Half';
-    document.getElementById('spec-score1').textContent=fx.score1||0;
-    document.getElementById('spec-score2').textContent=fx.score2||0;
-    document.getElementById('spec-name1').textContent=(fx.team1||'Home').toUpperCase();
-    document.getElementById('spec-name2').textContent=(fx.team2||'Away').toUpperCase();
-    document.getElementById('spec-match-label').innerHTML=(fx.running?'<span class="live-dot"></span>':'')+(fx.comp||'Rugby Union');
-    document.getElementById('spec-halftime').style.display=fx.halfTime?'block':'none';
-    const l1=document.getElementById('spec-lead1'),l2=document.getElementById('spec-lead2');
-    l1.innerHTML='';l2.innerHTML='';
-    if((fx.score1||0)>(fx.score2||0))l1.innerHTML='<span class="leading-tag">Leading</span>';
-    else if((fx.score2||0)>(fx.score1||0))l2.innerHTML='<span class="leading-tag">Leading</span>';
-    const evts=fx.events||[];
-    const xl=document.getElementById('spec-events-list');
-    if(!evts.length){xl.innerHTML='<div class="spec-no-events">No events yet</div>';return;}
-    xl.innerHTML=evts.slice().reverse().slice(0,8).map(e=>
-      '<div class="spec-event-row"><span class="spec-event-team">'+e.team+'</span><span class="spec-event-type">'+e.type+'</span>'+(e.time?'<span class="spec-event-time">'+e.time+'</span>':'')+'</div>'
-    ).join('');
-  }
-
   function specSelectFixture(id){
     specViewingId=id;
+    renderSpecFixtureList();
+    renderSpecPanel();
     document.getElementById('spec-fixture-select').style.display='none';
     document.getElementById('spec-score-panel').style.display='block';
-    renderSpecPanel();renderSpecFixtureList();
   }
 
   function specBack(){
     specViewingId=null;
+    renderSpecFixtureList();
     document.getElementById('spec-score-panel').style.display='none';
     document.getElementById('spec-fixture-select').style.display='block';
+  }
+
+  function renderSpecPanel(){
+    const fx=fixtures.find(f=>f.id===specViewingId);if(!fx)return;
+    document.getElementById('spec-timer').textContent=fxTime(fx);
+    document.getElementById('spec-half').textContent=fx.finished?'Match Ended':(fx.half===1?'1st Half':'2nd Half');
+    document.getElementById('spec-score1').textContent=fx.score1||0;
+    document.getElementById('spec-score2').textContent=fx.score2||0;
+    document.getElementById('spec-name1').textContent=fx.team1;
+    document.getElementById('spec-name2').textContent=fx.team2;
+    document.getElementById('spec-match-label').textContent=fx.comp||'Rugby Match';
+    
+    document.getElementById('spec-halftime').style.display=fx.halfTime?'block':'none';
+    
+    const l1=document.getElementById('spec-lead1');
+    const l2=document.getElementById('spec-lead2');
+    l1.innerHTML='';l2.innerHTML='';
+    if(fx.score1>fx.score2)l1.innerHTML='<span class="leading-tag">Leading</span>';
+    else if(fx.score2>fx.score1)l2.innerHTML='<span class="leading-tag">Leading</span>';
+
+    const evEl=document.getElementById('spec-events-list');
+    const evts=fx.events||[];
+    if(!evts.length){evEl.innerHTML='<div class="spec-no-events">No events yet</div>';return;}
+    evEl.innerHTML=evts.slice().reverse().map(e=>`
+      <div class="spec-event-row">
+        <span class="spec-event-team">${e.team}</span>
+        <span class="spec-event-type">${e.type}</span>
+        <span class="spec-event-time">${e.time}</span>
+      </div>
+    `).join('');
+  }
+
+  function saveToStorage(){
+    localStorage.setItem('rugby_fixtures', JSON.stringify(fixtures));
+  }
+
+  function loadFromStorage(){
+    const stored = localStorage.getItem('rugby_fixtures');
+    if(stored){
+      try {
+        fixtures = JSON.parse(stored);
+        // Reset running states on load
+        fixtures.forEach(f => { f.running = false; });
+      } catch(e) { fixtures = []; }
+    }
+  }
+
+  // Dual-Link processing on bootup
+  window.addEventListener('DOMContentLoaded', () => {
+    loadFromStorage();
+    renderFixtureList();
+    renderScorerPickList();
     renderSpecFixtureList();
-  }
 
-  function switchTab(t){
-    ['scorer','fixtures','spectator'].forEach((n,i)=>{
-      document.querySelectorAll('.tab')[i].classList.toggle('active',n===t);
-      document.getElementById('view-'+n).classList.toggle('active',n===t);
-    });
-  }
-
-  renderFixtureList();renderScorerPickList();renderSpecFixtureList();
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role');
+    
+    if (role === 'spectator') {
+      // Hide administrative tabs entirely
+      document.getElementById('app-tabs').style.display = 'none';
+      // Automatically navigate to the spectator page area
+      switchTab('spectator');
+      
+      // Auto-load match view if only 1 match exists
+      if(fixtures.length === 1){
+        specSelectFixture(fixtures[0].id);
+        document.getElementById('spec-back-button').style.display = 'none';
+      }
+    } else {
+      renderScorerActive();
+    }
+  });
 </script>
 </body>
 </html>
