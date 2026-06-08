@@ -262,21 +262,17 @@
 </div>
 
 <script>
-  // CONNECTED DIRECTLY TO YOUR REALTIME DATABASE:
   const firebaseConfig = {
     databaseURL: "https://rugby-scorer-50d3a-default-rtdb.europe-west1.firebasedatabase.app/"
   };
   
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // ADMIN SECURITY LOGIN CONFIG (Default PIN: 1234)
   let adminPin = localStorage.getItem('rugby_admin_pin') || '';
 
   function checkAdminAccess() {
     if (adminPin === '1234') return true; 
-    
     const input = prompt("Enter Admin PIN to manage match data:");
     if (input === '1234') {
       adminPin = input;
@@ -289,18 +285,16 @@
   }
 
   let fixtures=[], activeFixtureId=null, specViewingId=null;
-  let running=false, interval=null;
+  let interval=null;
   const scoreTypeMap={5:'Try',2:'Conversion',3:'Pen / Drop Goal','-1':'Point removed'};
 
   function pad(n){return String(n).padStart(2,'0');}
   
-  // COUNT DOWN TIMING FORMAT
   function fxTime(fx){
     let secLeft = 0;
     let halfSec = (fx.halfDuration || 40) * 60;
-    if (fx.finished) {
-      return "00:00";
-    }
+    if (fx.finished) return "00:00";
+    
     if (fx.half === 1) {
       secLeft = Math.max(0, halfSec - (fx.seconds || 0));
     } else {
@@ -353,7 +347,7 @@
         <div class="half-label" id="half-label">${halfLabel}</div>
         ${durInfo?'<div class="duration-info">'+durInfo+'</div>':''}
       </div>
-      <div class="halftime-banner" id="halftime-banner" style="display:${htDisplay}">Half Time — Start layout to transition to 2nd Half</div>
+      <div class="halftime-banner" id="halftime-banner" style="display:${htDisplay}">Half Time — Start clock to transition to 2nd Half</div>
       <div class="score-grid">
         <div class="team-card">
           <div class="team-name-static">${fx.team1}</div>
@@ -380,7 +374,7 @@
         </div>
       </div>
       <div class="ctrl-row">
-        <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()"><i class="ti ti-player-play"></i> Start</button>
+        <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()"></i id="start-icon"></i> Start</button>
         <button class="ctrl-btn warning" onclick="endHalfManually()"><i class="ti ti-hourglass-empty"></i> End Half</button>
         <button class="ctrl-btn danger" onclick="endGameManually()"><i class="ti ti-flag"></i> End Game</button>
         <button class="ctrl-btn" onclick="resetTimer()"><i class="ti ti-refresh"></i> Reset Timer</button>
@@ -391,14 +385,19 @@
         <div class="events-list" id="events-list"></div>
       </div>`;
     renderEvents();
-    updateStartBtn();
+    updateStartBtn(fx);
   }
 
-  function updateStartBtn(){
+  function updateStartBtn(fx){
     const btn=document.getElementById('start-btn');
-    if(!btn)return;
-    if(running){btn.innerHTML='<i class="ti ti-player-pause"></i> Pause';btn.className='ctrl-btn';}
-    else{btn.innerHTML='<i class="ti ti-player-play"></i> Start';btn.className='ctrl-btn primary';}
+    if(!btn || !fx) return;
+    if(fx.running){
+      btn.innerHTML='<i class="ti ti-player-pause"></i> Pause';
+      btn.className='ctrl-btn';
+    } else {
+      btn.innerHTML='<i class="ti ti-player-play"></i> Start';
+      btn.className='ctrl-btn primary';
+    }
   }
 
   function renderEvents(){
@@ -409,83 +408,104 @@
   }
 
   function loadFixture(id){
-    if(running)stopTimer();
     activeFixtureId=id;
     renderScorerPickList();renderScorerActive();
   }
 
-  function stopTimer(){
-    running=false;clearInterval(interval);
-    const fx=getActiveFx();if(fx)fx.running=false;
-    updateStartBtn();
-    saveToStorage();
+  // TIMER ENGINE
+  if(!interval){
+    interval = setInterval(() => {
+      let componentsChanged = false;
+      fixtures.forEach(fx => {
+        if(fx.running && !fx.finished) {
+          fx.seconds = (fx.seconds || 0) + 1;
+          const hd = (fx.halfDuration || 40) * 60;
+          
+          if(fx.seconds >= hd && fx.half === 1 && !fx.halfTime) {
+            fx.halfTime = true;
+            fx.running = false;
+            fx.seconds = hd;
+          }
+          if(fx.seconds >= (hd * 2)) {
+            fx.finished = true;
+            fx.running = false;
+            fx.seconds = hd * 2;
+            if(!fx.events) fx.events=[];
+            fx.events.push({team:'Match',type:'Full time!',time:''});
+          }
+          
+          if(fx.id === activeFixtureId) {
+            const timerEl = document.getElementById('timer');
+            if(timerEl) timerEl.textContent = fxTime(fx);
+          }
+          if(fx.id === specViewingId) {
+            const specTimerEl = document.getElementById('spec-timer');
+            if(specTimerEl) specTimerEl.textContent = fxTime(fx);
+          }
+        }
+      });
+    }, 1000);
   }
 
   function toggleTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    running=!running;
-    if(running){
-      fx.running=true;updateStartBtn();
-      interval=setInterval(()=>{
-        fx.seconds=(fx.seconds||0)+1;
-        const hd=(fx.halfDuration||40)*60;
-        
-        if(fx.seconds>=hd&&fx.half===1){
-          fx.halfTime=true;
-          fx.seconds=hd;
-          stopTimer();
-        }
-        if(fx.seconds>=(hd*2)){
-          fx.finished=true;fx.running=false;
-          fx.seconds=hd*2;
-          if(!fx.events) fx.events=[];
-          fx.events.push({team:'Match',type:'Full time!',time:''});
-          stopTimer();
-        }
-        saveToStorage();
-      },1000);
-    } else {stopTimer();}
+    
+    let isRunning = !fx.running;
+    
+    if(isRunning && fx.halfTime && fx.half === 1) {
+      fx.half = 2;
+      fx.halfTime = false;
+      fx.seconds = (fx.halfDuration || 40) * 60;
+    }
+    
+    db.ref('fixtures/' + fx.id).update({
+      running: isRunning,
+      half: fx.half,
+      halfTime: fx.halfTime,
+      seconds: fx.seconds || 0
+    });
   }
 
   function endHalfManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    if(running)stopTimer();
     const hd=(fx.halfDuration||40)*60;
+    
+    if(!fx.events) fx.events = [];
+    
     if(fx.half===1){
       fx.halfTime=true;
+      fx.running=false;
       fx.seconds=hd;
-      if(!fx.events) fx.events=[];
       fx.events.push({team:'Match',type:'Half time called',time:fxTime(fx)});
     } else {
       fx.finished=true;
+      fx.running=false;
       fx.seconds=hd*2;
-      if(!fx.events) fx.events=[];
       fx.events.push({team:'Match',type:'Full time called',time:fxTime(fx)});
     }
-    saveToStorage();
+    db.ref('fixtures/' + fx.id).set(fx);
   }
 
   function endGameManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
     if(!confirm('Are you sure you want to declare Full Time for this game?'))return;
-    if(running)stopTimer();
     const hd=(fx.halfDuration||40)*60;
+    
     fx.finished=true;
     fx.running=false;
     fx.halfTime=false;
     fx.seconds=hd*2;
     if(!fx.events) fx.events=[];
     fx.events.push({team:'Match',type:'Full time!',time:''});
-    saveToStorage();
+    db.ref('fixtures/' + fx.id).set(fx);
   }
 
   function resetTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
-    if(running)stopTimer();
     const hd=(fx.halfDuration||40)*60;
     if(fx.finished){
       fx.finished=false;
@@ -500,16 +520,16 @@
       fx.seconds=0;
       fx.halfTime=false;
     }
-    saveToStorage();
+    fx.running=false;
+    db.ref('fixtures/' + fx.id).set(fx);
   }
 
   function confirmReset(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
     if(!confirm('Reset all scores, timer and events for this match?'))return;
-    if(running)stopTimer();
     fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;
-    saveToStorage();
+    db.ref('fixtures/' + fx.id).set(fx);
   }
 
   function addScore(team,pts){
@@ -521,10 +541,9 @@
     const type=scoreTypeMap[String(pts)]||(pts+' pts');
     if(!fx.events) fx.events = [];
     fx.events.push({team:teamName,type:type+(pts>0?' (+'+pts+')':''),time:fxTime(fx)});
-    saveToStorage();
+    db.ref('fixtures/' + fx.id).set(fx);
   }
 
-  // RENDER FIXTURE LIST WITH TRASH CAN BUTTON INCLUDED
   function renderFixtureList(){
     const el=document.getElementById('fixture-list');
     if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures yet</div>';return;}
@@ -567,11 +586,10 @@
     document.getElementById('fx-duration').value='40';
   }
 
-  // DELETE FIXTURE REMOVAL FUNCTION
   function deleteFixture(id){
     if(!checkAdminAccess()) return;
     if(!confirm('Are you sure you want to permanently delete this fixture?')) return;
-    if(activeFixtureId===id){if(running)stopTimer();activeFixtureId=null;}
+    if(activeFixtureId===id) activeFixtureId=null;
     if(specViewingId===id){specViewingId=null;document.getElementById('spec-score-panel').style.display='none';document.getElementById('spec-fixture-select').style.display='block';}
     db.ref('fixtures/' + id).remove();
   }
@@ -636,16 +654,11 @@
     `).join('');
   }
 
-  function saveToStorage(){
-    const fx = getActiveFx();
-    if(fx){
-      db.ref('fixtures/' + fx.id).set(fx);
-    }
-  }
-
   function initRealtimeSync(){
     db.ref('fixtures').on('value', (snapshot) => {
       const data = snapshot.val();
+      const oldActiveId = activeFixtureId;
+      
       if(data) {
         fixtures = Object.keys(data).map(key => data[key]);
       } else {
@@ -655,7 +668,30 @@
       renderFixtureList();
       renderScorerPickList();
       renderSpecFixtureList();
-      if(activeFixtureId) renderScorerActive();
+      
+      if(activeFixtureId) {
+        const currentFx = getActiveFx();
+        if(currentFx) {
+          const timerEl = document.getElementById('timer');
+          if(timerEl) timerEl.textContent = fxTime(currentFx);
+          
+          const s1 = document.getElementById('score1');
+          if(s1) s1.textContent = currentFx.score1 || 0;
+          const s2 = document.getElementById('score2');
+          if(s2) s2.textContent = currentFx.score2 || 0;
+          
+          const hl = document.getElementById('half-label');
+          if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : '2nd Half');
+          
+          const hb = document.getElementById('halftime-banner');
+          if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
+          
+          updateStartBtn(currentFx);
+        } else {
+          activeFixtureId = null;
+          renderScorerActive();
+        }
+      }
       if(specViewingId) renderSpecPanel();
     });
   }
@@ -683,4 +719,3 @@
 </script>
 </body>
 </html>
-
