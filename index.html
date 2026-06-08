@@ -127,7 +127,6 @@
   .fixture-vs { font-size: 13px; font-weight: 600; color: var(--color-text3); text-align: center; }
   .fixture-meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .fixture-meta-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-  .fixture-meta-grid-stacked { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
   .fixture-add-btn { width: 100%; background: var(--color-info-bg); color: var(--color-info); border: 1px solid var(--color-info-border); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
   .fixture-add-btn:hover { background: rgba(79,142,247,0.2); }
   .fixture-list { display: flex; flex-direction: column; gap: 8px; }
@@ -140,11 +139,17 @@
   .fx-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
   .fx-badge.live { background: var(--color-danger-bg); color: var(--color-danger); }
   .fx-badge.ft { background: var(--color-success-bg); color: var(--color-success); }
-  .fx-del { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 5px 9px; font-size: 13px; color: var(--color-text2); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 30px; width: 34px; }
-  .fx-del:hover { background: var(--color-danger-bg); color: var(--color-danger); border-color: var(--color-danger-border); }
+  
+  .fx-action-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 5px 9px; font-size: 13px; color: var(--color-text2); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 30px; width: 34px; }
+  .fx-action-btn:hover { color: var(--color-info); border-color: rgba(79,142,247,0.4); background: var(--color-info-bg); }
+  .fx-action-btn.del:hover { background: var(--color-danger-bg); color: var(--color-danger); border-color: var(--color-danger-border); }
+  
   .empty-fixtures { font-size: 13px; color: var(--color-text2); font-style: italic; text-align: center; padding: 1.5rem 0; }
   .input-label { font-size: 11px; color: var(--color-text3); margin-bottom: 4px; font-weight: 500; }
   .input-group { display: flex; flex-direction: column; }
+
+  /* EDIT INLINE DRAWER/MODAL */
+  .edit-modal { display: none; background: var(--color-surface2); border: 2px solid var(--color-info-border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
 
   /* SPECTATOR */
   .spectator { padding: 1.5rem 1rem; }
@@ -221,7 +226,39 @@
 
   <div id="view-fixtures" class="view">
     <div class="fixtures-wrap">
-      <div class="add-fixture-card">
+      
+      <div class="edit-modal" id="edit-fixture-panel">
+        <div class="section-label" style="margin-bottom:14px; color:var(--color-info);"><i class="ti ti-edit"></i> Edit Fixture</div>
+        <input type="hidden" id="edit-fx-id"/>
+        <div class="fixture-form">
+          <input class="fixture-input" id="edit-fx-team1" placeholder="Home team" maxlength="20"/>
+          <div class="fixture-vs">vs</div>
+          <input class="fixture-input" id="edit-fx-team2" placeholder="Away team" maxlength="20"/>
+        </div>
+        <div class="fixture-meta-grid-2">
+          <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo1" placeholder="Image URL"/></div>
+          <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo2" placeholder="Image URL"/></div>
+        </div>
+        <div class="fixture-meta-grid-2">
+          <div class="input-group"><div class="input-label">Home Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad1" placeholder="Players..."></textarea></div>
+          <div class="input-group"><div class="input-label">Away Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad2" placeholder="Players..."></textarea></div>
+        </div>
+        <div class="fixture-meta-grid">
+          <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="edit-fx-date" type="date"/></div>
+          <div class="input-group"><div class="input-label">Kick-off</div><input class="fixture-input" id="edit-fx-time" type="time"/></div>
+          <div class="input-group"><div class="input-label">Half duration (min)</div><input class="fixture-input" id="edit-fx-duration" type="number" min="1" max="99"/></div>
+        </div>
+        <div class="fixture-meta-grid-2">
+          <div class="input-group"><div class="input-label">Venue</div><input class="fixture-input" id="edit-fx-venue" placeholder="Venue" maxlength="30"/></div>
+          <div class="input-group"><div class="input-label">Competition</div><input class="fixture-input" id="edit-fx-comp" placeholder="Competition" maxlength="30"/></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:4px;">
+           <button class="fixture-add-btn" onclick="saveFixtureEdits()" style="background:var(--color-info-bg); color:var(--color-info); border-color:var(--color-info-border); flex:2;"><i class="ti ti-check"></i> Save Changes</button>
+           <button class="fixture-add-btn" onclick="closeEditPanel()" style="background:transparent; color:var(--color-text2); border-color:var(--color-border); flex:1;">Cancel</button>
+        </div>
+      </div>
+
+      <div class="add-fixture-card" id="create-fixture-panel">
         <div class="section-label" style="margin-bottom:14px;"><i class="ti ti-plus"></i> Add fixture</div>
         <div class="fixture-form">
           <input class="fixture-input" id="fx-team1" placeholder="Home team" maxlength="20"/>
@@ -247,6 +284,7 @@
         </div>
         <button class="fixture-add-btn" onclick="addFixture()"><i class="ti ti-plus"></i> Add to schedule</button>
       </div>
+      
       <div class="section-label"><i class="ti ti-calendar"></i> Scheduled fixtures</div>
       <div class="fixture-list" id="fixture-list"><div class="empty-fixtures">No fixtures yet</div></div>
     </div>
@@ -315,7 +353,7 @@
 
   let fixtures=[], activeFixtureId=null, specViewingId=null;
   let interval=null;
-  let stagedScore = null; // Holds the point payload temporarily while choosing a player
+  let stagedScore = null; 
   const scoreTypeMap={5:'Try',2:'Conversion',3:'Pen / Drop Goal','-1':'Point removed'};
 
   function pad(n){return String(n).padStart(2,'0');}
@@ -586,33 +624,28 @@
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
     
-    // Hide both picker options first
     document.getElementById('player-box-1').style.display = 'none';
     document.getElementById('player-box-2').style.display = 'none';
 
     stagedScore = { team, pts };
 
-    // If removing points, or if no squads are registered, bypass selection entirely
     const squadString = team === 1 ? fx.squad1 : fx.squad2;
     if(pts === -1 || !squadString) {
        commitScore(team, "");
        return;
     }
 
-    // Parse player comma string array
     const players = squadString.split(',').map(p => p.trim()).filter(Boolean);
     if(players.length === 0) {
        commitScore(team, "");
        return;
     }
 
-    // Build Selector Options
     const selectEl = document.getElementById('player-select-' + team);
     selectEl.innerHTML = '<option value="" disabled selected>-- Choose Player --</option>' + 
                          players.map(p => `<option value="${p}">${p}</option>`).join('') +
                          '<option value="">Unknown / Anonymous</option>';
 
-    // Show selection element container
     document.getElementById('player-box-' + team).style.display = 'flex';
   }
 
@@ -639,7 +672,6 @@
        player: chosenPlayer || ""
     });
 
-    // Reset UI boxes
     document.getElementById('player-box-1').style.display = 'none';
     document.getElementById('player-box-2').style.display = 'none';
     stagedScore = null;
@@ -659,9 +691,75 @@
         +' <span style="font-family:var(--font-mono);font-size:13px;color:var(--color-text2)">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span></div>'
         +(detail?'<div class="fixture-detail">'+detail+'</div>':'')+'</div></div>'
         +'<div class="fixture-actions">'+badge
-        +'<button class="fx-del" onclick="deleteFixture('+fx.id+')" title="Delete"><i class="ti ti-trash"></i></button>'
+        +'<button class="fx-action-btn" onclick="openEditPanel('+fx.id+')" title="Edit"><i class="ti ti-pencil"></i></button>'
+        +'<button class="fx-action-btn del" onclick="deleteFixture('+fx.id+')" title="Delete"><i class="ti ti-trash"></i></button>'
         +'</div></div>';
     }).join('');
+  }
+
+  /* EDITING SUBSYSTEM LOGIC */
+  function openEditPanel(id) {
+     if(!checkAdminAccess()) return;
+     const fx = fixtures.find(f => f.id === id);
+     if(!fx) return;
+
+     document.getElementById('create-fixture-panel').style.display = 'none';
+     const panel = document.getElementById('edit-fixture-panel');
+     panel.style.display = 'block';
+
+     document.getElementById('edit-fx-id').value = fx.id;
+     document.getElementById('edit-fx-team1').value = fx.team1 || '';
+     document.getElementById('edit-fx-team2').value = fx.team2 || '';
+     document.getElementById('edit-fx-logo1').value = fx.logo1 || '';
+     document.getElementById('edit-fx-logo2').value = fx.logo2 || '';
+     document.getElementById('edit-fx-squad1').value = fx.squad1 || '';
+     document.getElementById('edit-fx-squad2').value = fx.squad2 || '';
+     document.getElementById('edit-fx-date').value = fx.date || '';
+     document.getElementById('edit-fx-time').value = fx.time || '15:00';
+     document.getElementById('edit-fx-duration').value = fx.halfDuration || 40;
+     document.getElementById('edit-fx-venue').value = fx.venue || '';
+     document.getElementById('edit-fx-comp').value = fx.comp || '';
+
+     panel.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function closeEditPanel() {
+     document.getElementById('edit-fixture-panel').style.display = 'none';
+     document.getElementById('create-fixture-panel').style.display = 'block';
+  }
+
+  function saveFixtureEdits() {
+     if(!checkAdminAccess()) return;
+     const id = document.getElementById('edit-fx-id').value;
+     if(!id) return;
+
+     const t1 = document.getElementById('edit-fx-team1').value.trim();
+     const t2 = document.getElementById('edit-fx-team2').value.trim();
+     if(!t1 || !t2) { alert('Both team names are required.'); return; }
+
+     const dur = parseInt(document.getElementById('edit-fx-duration').value) || 40;
+
+     const updatePayload = {
+        team1: t1,
+        team2: t2,
+        logo1: document.getElementById('edit-fx-logo1').value.trim(),
+        logo2: document.getElementById('edit-fx-logo2').value.trim(),
+        squad1: document.getElementById('edit-fx-squad1').value.trim(),
+        squad2: document.getElementById('edit-fx-squad2').value.trim(),
+        date: document.getElementById('edit-fx-date').value || '',
+        time: document.getElementById('edit-fx-time').value || '15:00',
+        halfDuration: Math.min(99, Math.max(1, dur)),
+        venue: document.getElementById('edit-fx-venue').value.trim(),
+        comp: document.getElementById('edit-fx-comp').value.trim()
+     };
+
+     db.ref('fixtures/' + id).update(updatePayload, (error) => {
+        if(error) {
+           alert("Failed to save changes: " + error.message);
+        } else {
+           closeEditPanel();
+        }
+     });
   }
 
   function addFixture(){
