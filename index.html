@@ -160,7 +160,7 @@
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
   .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-danger); animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-  .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
+  .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
 
   /* scrollbar */
@@ -484,7 +484,7 @@
       fx.seconds=hd*2;
       fx.events.push({team:'Match',type:'Full time called',time:fxTime(fx)});
     }
-    db.ref('fixtures/' + fx.id).set(fx);
+    db.ref('fixtures/' + fx.id).update(fx);
   }
 
   function endGameManually(){
@@ -499,7 +499,7 @@
     fx.seconds=hd*2;
     if(!fx.events) fx.events=[];
     fx.events.push({team:'Match',type:'Full time!',time:''});
-    db.ref('fixtures/' + fx.id).set(fx);
+    db.ref('fixtures/' + fx.id).update(fx);
   }
 
   function resetTimer(){
@@ -520,7 +520,7 @@
       fx.halfTime=false;
     }
     fx.running=false;
-    db.ref('fixtures/' + fx.id).set(fx);
+    db.ref('fixtures/' + fx.id).update(fx);
   }
 
   function confirmReset(){
@@ -528,7 +528,7 @@
     const fx=getActiveFx();if(!fx)return;
     if(!confirm('Reset all scores, timer and events for this match?'))return;
     fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;
-    db.ref('fixtures/' + fx.id).set(fx);
+    db.ref('fixtures/' + fx.id).update(fx);
   }
 
   function addScore(team,pts){
@@ -540,7 +540,7 @@
     const type=scoreTypeMap[String(pts)]||(pts+' pts');
     if(!fx.events) fx.events = [];
     fx.events.push({team:teamName,type:type+(pts>0?' (+'+pts+')':''),time:fxTime(fx)});
-    db.ref('fixtures/' + fx.id).set(fx);
+    db.ref('fixtures/' + fx.id).update(fx);
   }
 
   function renderFixtureList(){
@@ -568,14 +568,32 @@
     const dur=parseInt(document.getElementById('fx-duration').value)||40;
     
     const newId = Date.now();
-    db.ref('fixtures/' + newId).set({
+    const payload = {};
+    payload[newId] = {
       id:newId,team1:t1,team2:t2,
-      date:document.getElementById('fx-date').value,
-      time:document.getElementById('fx-time').value,
+      date:document.getElementById('fx-date').value || '',
+      time:document.getElementById('fx-time').value || '15:00',
       halfDuration:Math.min(99,Math.max(1,dur)),
       venue:document.getElementById('fx-venue').value.trim(),
       comp:document.getElementById('fx-comp').value.trim(),
       score1:0,score2:0,seconds:0,half:1,events:[],running:false,finished:false,halfTime:false
+    };
+
+    db.ref('fixtures').update(payload, (error) => {
+      if(error) {
+         alert("Data saving error: " + error.message);
+      } else {
+         // Force an active local update block on success 
+         db.ref('fixtures').get().then((snap) => {
+            if(snap.exists()){
+               const fresh = snap.val();
+               fixtures = Object.keys(fresh).map(k => fresh[k]);
+               renderFixtureList();
+               renderScorerPickList();
+               renderSpecFixtureList();
+            }
+         });
+      }
     });
 
     document.getElementById('fx-team1').value='';
