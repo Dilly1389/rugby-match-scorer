@@ -4,7 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Rugby Match Scorer</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/iconfont/tabler-icons.min.css"/>
 <style>
   :root {
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -37,7 +36,7 @@
 
   /* TABS */
   .tabs { display: flex; border-bottom: 1px solid var(--color-border); background: var(--color-surface); position: sticky; top: 0; z-index: 10; }
-  .tab { flex: 1; padding: 14px 10px; font-size: 13px; font-weight: 500; color: var(--color-text2); cursor: pointer; border-bottom: 2px solid transparent; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px; transition: color 0.15s; }
+  .tab { flex: 1; padding: 14px 10px; font-size: 13px; font-weight: 500; color: var(--color-text2); cursor: pointer; border-bottom: 2px solid transparent; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; transition: color 0.15s; }
   .tab.active { color: var(--color-text); border-bottom-color: var(--color-info); }
   .tab:hover:not(.active) { color: var(--color-text); }
   .view { display: none; } .view.active { display: block; }
@@ -49,8 +48,8 @@
   /* LOGOS */
   .team-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.03); padding: 2px; }
   .team-logo-lg { width: 70px; height: 70px; object-fit: contain; margin-bottom: 8px; }
-  .logo-placeholder { font-size: 28px; color: var(--color-text3); display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--color-surface2); border-radius: 4px; }
-  .logo-placeholder-lg { font-size: 48px; width: 70px; height: 70px; margin: 0 auto 8px auto; background: var(--color-surface2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--color-text3); }
+  .logo-placeholder { font-size: 20px; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--color-surface2); border-radius: 4px; }
+  .logo-placeholder-lg { font-size: 36px; width: 70px; height: 70px; margin: 0 auto 8px auto; background: var(--color-surface2); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 
   /* SCORER */
   .board { padding: 1.25rem 1rem; }
@@ -113,7 +112,7 @@
   .no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
   .halftime-banner { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1rem; }
   .no-fixture-selected { text-align: center; padding: 2.5rem 1rem; color: var(--color-text2); font-size: 14px; }
-  .no-fixture-selected i { font-size: 32px; display: block; margin-bottom: 10px; color: var(--color-text3); }
+  .no-fixture-selected span { font-size: 28px; display: block; margin-bottom: 10px; }
 
   /* FIXTURES TAB */
   .fixtures-wrap { padding: 1.25rem 1rem; }
@@ -136,11 +135,11 @@
   .fixture-teams { font-size: 14px; font-weight: 600; color: var(--color-text); }
   .fixture-detail { font-size: 12px; color: var(--color-text2); margin-top: 3px; }
   
-  /* ICON ACTIONS OVERHAUL */
+  /* RELIABLE ACTION BUTTONS */
   .fixture-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
-  .fx-action-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 5px; font-size: 16px; color: var(--color-text2); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 32px; width: 34px; transition: all 0.12s ease; }
-  .fx-action-btn:hover { color: var(--color-info); border-color: rgba(79,142,247,0.4); background: var(--color-info-bg); }
-  .fx-action-btn.del:hover { background: var(--color-danger-bg); color: var(--color-danger); border-color: var(--color-danger-border); }
+  .fx-action-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 4px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 32px; width: 34px; transition: all 0.12s ease; }
+  .fx-action-btn:hover { border-color: rgba(79,142,247,0.4); background: var(--color-info-bg); }
+  .fx-action-btn.del:hover { background: var(--color-danger-bg); border-color: var(--color-danger-border); }
   
   .fx-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
   .fx-badge.live { background: var(--color-danger-bg); color: var(--color-danger); }
@@ -184,7 +183,7 @@
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
   .spec-halftime { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
-  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-danger); animation: blink 1.2s infinite; }
+  .live-dot { inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-danger); animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
@@ -208,19 +207,19 @@
 <body>
 <div class="app">
   <div class="tabs" id="app-tabs">
-    <div class="tab active" onclick="switchTab('scorer')"><i class="ti ti-pencil"></i> Scorer</div>
-    <div class="tab" onclick="switchTab('fixtures')"><i class="ti ti-calendar"></i> Fixtures</div>
-    <div class="tab" onclick="switchTab('spectator')"><i class="ti ti-eye"></i> Spectator</div>
+    <div class="tab active" onclick="switchTab('scorer')">✏️ Scorer</div>
+    <div class="tab" onclick="switchTab('fixtures')">📅 Fixtures</div>
+    <div class="tab" onclick="switchTab('spectator')">👁️ Spectator</div>
   </div>
 
   <div id="view-scorer" class="view active">
     <div class="board">
       <div class="fixture-picker">
-        <div class="fixture-picker-label"><i class="ti ti-calendar"></i> Select fixture to score</div>
+        <div class="fixture-picker-label">📅 Select fixture to score</div>
         <div class="fixture-pick-list" id="scorer-pick-list"><div class="no-fixtures-msg">No fixtures yet — add them in the Fixtures tab</div></div>
       </div>
       <div id="scorer-active-area">
-        <div class="no-fixture-selected"><i class="ti ti-arrow-up"></i>Select a fixture above to start scoring</div>
+        <div class="no-fixture-selected"><span>⬆️</span>Select a fixture above to start scoring</div>
       </div>
     </div>
   </div>
@@ -229,7 +228,7 @@
     <div class="fixtures-wrap">
       
       <div class="edit-modal" id="edit-fixture-panel">
-        <div class="section-label" style="margin-bottom:14px; color:var(--color-info);"><i class="ti ti-edit"></i> Edit Fixture</div>
+        <div class="section-label" style="margin-bottom:14px; color:var(--color-info);">✏️ Edit Fixture</div>
         <input type="hidden" id="edit-fx-id"/>
         <div class="fixture-form">
           <input class="fixture-input" id="edit-fx-team1" placeholder="Home team" maxlength="20"/>
@@ -254,13 +253,13 @@
           <div class="input-group"><div class="input-label">Competition</div><input class="fixture-input" id="edit-fx-comp" placeholder="Competition" maxlength="30"/></div>
         </div>
         <div style="display:flex; gap:8px; margin-top:4px;">
-           <button class="fixture-add-btn" onclick="saveFixtureEdits()" style="background:var(--color-info-bg); color:var(--color-info); border-color:var(--color-info-border); flex:2;"><i class="ti ti-check"></i> Save Changes</button>
+           <button class="fixture-add-btn" onclick="saveFixtureEdits()" style="background:var(--color-info-bg); color:var(--color-info); border-color:var(--color-info-border); flex:2;">✅ Save Changes</button>
            <button class="fixture-add-btn" onclick="closeEditPanel()" style="background:transparent; color:var(--color-text2); border-color:var(--color-border); flex:1;">Cancel</button>
         </div>
       </div>
 
       <div class="add-fixture-card" id="create-fixture-panel">
-        <div class="section-label" style="margin-bottom:14px;"><i class="ti ti-plus"></i> Add fixture</div>
+        <div class="section-label" style="margin-bottom:14px;">➕ Add fixture</div>
         <div class="fixture-form">
           <input class="fixture-input" id="fx-team1" placeholder="Home team" maxlength="20"/>
           <div class="fixture-vs">vs</div>
@@ -283,10 +282,10 @@
           <div class="input-group"><div class="input-label">Venue</div><input class="fixture-input" id="fx-venue" placeholder="Optional" maxlength="30"/></div>
           <div class="input-group"><div class="input-label">Competition</div><input class="fixture-input" id="fx-comp" placeholder="Optional" maxlength="30"/></div>
         </div>
-        <button class="fixture-add-btn" onclick="addFixture()"><i class="ti ti-plus"></i> Add to schedule</button>
+        <button class="fixture-add-btn" onclick="addFixture()">➕ Add to schedule</button>
       </div>
       
-      <div class="section-label"><i class="ti ti-calendar"></i> Scheduled fixtures</div>
+      <div class="section-label">📅 Scheduled fixtures</div>
       <div class="fixture-list" id="fixture-list"><div class="empty-fixtures">No fixtures yet</div></div>
     </div>
   </div>
@@ -294,11 +293,11 @@
   <div id="view-spectator" class="view">
     <div class="spectator">
       <div id="spec-fixture-select">
-        <div class="section-label" style="margin-bottom:12px;"><i class="ti ti-eye"></i> Select a fixture to watch</div>
+        <div class="section-label" style="margin-bottom:12px;">👁️ Select a fixture to watch</div>
         <div class="spec-fixture-list" id="spec-fixture-list"><div class="empty-fixtures">No fixtures scheduled yet</div></div>
       </div>
       <div id="spec-score-panel" class="spec-score-panel">
-        <button class="spec-back-btn" id="spec-back-button" onclick="specBack()"><i class="ti ti-arrow-left"></i> All fixtures</button>
+        <button class="spec-back-btn" id="spec-back-button" onclick="specBack()">⬅️ All fixtures</button>
         <div class="spec-meta">
           <div class="spec-league" id="spec-match-label">Rugby Union</div>
           <div class="spec-timer" id="spec-timer">00:00</div>
@@ -378,7 +377,7 @@
     if(url && url.startsWith('http')) {
       return `<img src="${url}" class="${className}" alt="Logo" onerror="this.style.display='none'"/>`;
     }
-    return `<div class="${className === 'team-logo-lg' ? 'logo-placeholder-lg' : 'logo-placeholder'}"><i class="ti ti-shield"></i></div>`;
+    return `<div class="${className === 'team-logo-lg' ? 'logo-placeholder-lg' : 'logo-placeholder'}">🛡️</div>`;
   }
 
   function switchTab(tabName) {
@@ -411,7 +410,7 @@
   function renderScorerActive(){
     const area=document.getElementById('scorer-active-area');
     const fx=getActiveFx();
-    if(!fx){area.innerHTML='<div class="no-fixture-selected"><i class="ti ti-arrow-up"></i>Select a fixture above to start scoring</div>';return;}
+    if(!fx){area.innerHTML='<div class="no-fixture-selected"><span>⬆️</span>Select a fixture above to start scoring</div>';return;}
     const t=fxTime(fx);
     const halfLabel=fx.finished?'Match Ended':(fx.half===1?'1st Half':'2nd Half');
     const htDisplay=fx.halfTime?'block':'none';
@@ -460,14 +459,14 @@
         </div>
       </div>
       <div class="ctrl-row">
-        <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()"><i class="ti ti-player-play"></i> Start</button>
-        <button class="ctrl-btn warning" onclick="endHalfManually()"><i class="ti ti-hourglass-empty"></i> End Half</button>
-        <button class="ctrl-btn danger" onclick="endGameManually()"><i class="ti ti-flag"></i> End Game</button>
-        <button class="ctrl-btn" onclick="resetTimer()"><i class="ti ti-refresh"></i> Reset Timer</button>
-        <button class="ctrl-btn" style="color:var(--color-danger);" onclick="confirmReset()"><i class="ti ti-rotate-clockwise"></i> Reset Match</button>
+        <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()">▶️ Start</button>
+        <button class="ctrl-btn warning" onclick="endHalfManually()">⏳ End Half</button>
+        <button class="ctrl-btn danger" onclick="endGameManually()">🏁 End Game</button>
+        <button class="ctrl-btn" onclick="resetTimer()">🔄 Reset Timer</button>
+        <button class="ctrl-btn" style="color:var(--color-danger);" onclick="confirmReset()">⚠️ Reset Match</button>
       </div>
       <div class="events-section">
-        <div class="section-label"><i class="ti ti-list"></i> Match Events</div>
+        <div class="section-label">📋 Match Events</div>
         <div class="events-list" id="events-list"></div>
       </div>`;
     renderEvents();
@@ -478,10 +477,10 @@
     const btn=document.getElementById('start-btn');
     if(!btn || !fx) return;
     if(fx.running){
-      btn.innerHTML='<i class="ti ti-player-pause"></i> Pause';
+      btn.innerHTML='⏸️ Pause';
       btn.className='ctrl-btn';
     } else {
-      btn.innerHTML='<i class="ti ti-player-play"></i> Start';
+      btn.innerHTML='▶️ Start';
       btn.className='ctrl-btn primary';
     }
   }
@@ -691,8 +690,8 @@
         +' <span style="font-family:var(--font-mono);font-size:13px;color:var(--color-text2)">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span></div>'
         +(detail?'<div class="fixture-detail">'+detail+'</div>':'')+'</div></div>'
         +'<div class="fixture-actions">'+badge
-        +'<button class="fx-action-btn" onclick="openEditPanel('+fx.id+')" title="Edit"><i class="ti ti-pencil"></i></button>'
-        +'<button class="fx-action-btn del" onclick="deleteFixture('+fx.id+')" title="Delete"><i class="ti ti-trash"></i></button>'
+        +'<button class="fx-action-btn" onclick="openEditPanel('+fx.id+')" title="Edit">✏️</button>'
+        +'<button class="fx-action-btn del" onclick="deleteFixture('+fx.id+')" title="Delete">🗑️</button>'
         +'</div></div>';
     }).join('');
   }
