@@ -160,7 +160,7 @@
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
   .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-danger); animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-  .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
+  .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
 
   /* scrollbar */
@@ -374,7 +374,7 @@
         </div>
       </div>
       <div class="ctrl-row">
-        <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()"></i id="start-icon"></i> Start</button>
+        <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()"><i class="ti ti-player-play"></i> Start</button>
         <button class="ctrl-btn warning" onclick="endHalfManually()"><i class="ti ti-hourglass-empty"></i> End Half</button>
         <button class="ctrl-btn danger" onclick="endGameManually()"><i class="ti ti-flag"></i> End Game</button>
         <button class="ctrl-btn" onclick="resetTimer()"><i class="ti ti-refresh"></i> Reset Timer</button>
@@ -415,7 +415,6 @@
   // TIMER ENGINE
   if(!interval){
     interval = setInterval(() => {
-      let componentsChanged = false;
       fixtures.forEach(fx => {
         if(fx.running && !fx.finished) {
           fx.seconds = (fx.seconds || 0) + 1;
@@ -657,7 +656,6 @@
   function initRealtimeSync(){
     db.ref('fixtures').on('value', (snapshot) => {
       const data = snapshot.val();
-      const oldActiveId = activeFixtureId;
       
       if(data) {
         fixtures = Object.keys(data).map(key => data[key]);
