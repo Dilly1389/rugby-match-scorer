@@ -364,6 +364,12 @@
   const db = firebase.database();
 
   let adminPin = localStorage.getItem('rugby_admin_pin') || '';
+  let serverTimeOffset = 0; // Tracks clock alignment offset with central Firebase server
+
+  // Calculate alignment discrepancy with global server clock
+  db.ref(".info/serverTimeOffset").on("value", (snap) => {
+    serverTimeOffset = snap.val() || 0;
+  });
 
   function checkAdminAccess() {
     if (adminPin === '1234') return true; 
@@ -385,15 +391,23 @@
 
   function pad(n){return String(n).padStart(2,'0');}
   
+  // FIXED ENGINE: Computes accurate global absolute values based on uniform absolute timestamps
   function fxTime(fx){
-    let secLeft = 0;
     let halfSec = (fx.halfDuration || 40) * 60;
     if (fx.finished) return "00:00";
     
+    let elapsedSeconds = fx.seconds || 0;
+    if (fx.running && fx.timerStartTime) {
+      let currentServerTime = Date.now() + serverTimeOffset;
+      let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
+      elapsedSeconds += realTimeDelta;
+    }
+
+    let secLeft = 0;
     if (fx.half === 1) {
-      secLeft = Math.max(0, halfSec - (fx.seconds || 0));
+      secLeft = Math.max(0, halfSec - elapsedSeconds);
     } else {
-      secLeft = Math.max(0, (halfSec * 2) - (fx.seconds || 0));
+      secLeft = Math.max(0, (halfSec * 2) - elapsedSeconds);
     }
     return pad(Math.floor(secLeft / 60)) + ':' + pad(secLeft % 60);
   }
@@ -528,37 +542,50 @@
     renderScorerPickList();renderScorerActive();
   }
 
+  // RE-ENGINEERED TICK ENGINE: Coordinates all timers locally using high-frequency frame calculation loops
   if(!interval){
     interval = setInterval(() => {
       fixtures.forEach(fx => {
         if(fx.running && !fx.finished) {
-          fx.seconds = (fx.seconds || 0) + 1;
+          // Check limits defensively to automate auto-cutoffs
           const hd = (fx.halfDuration || 40) * 60;
+          let currentServerTime = Date.now() + serverTimeOffset;
+          let realTimeDelta = Math.floor((currentServerTime - (fx.timerStartTime || currentServerTime)) / 1000);
+          let elapsedSeconds = (fx.seconds || 0) + realTimeDelta;
           
-          if(fx.seconds >= hd && fx.half === 1 && !fx.halfTime) {
-            fx.halfTime = true;
-            fx.running = false;
-            fx.seconds = hd;
+          if(elapsedSeconds >= hd && fx.half === 1 && !fx.halfTime) {
+            if (checkAdminAccess) { // Trigger safety updates safely on the local controller
+              fx.halfTime = true;
+              fx.running = false;
+              fx.seconds = hd;
+              fx.timerStartTime = null;
+              db.ref('fixtures/' + fx.id).update({ running: false, halfTime: true, seconds: hd, timerStartTime: null });
+            }
           }
-          if(fx.seconds >= (hd * 2)) {
-            fx.finished = true;
-            fx.running = false;
-            fx.seconds = hd * 2;
-            if(!fx.events) fx.events=[];
-            fx.events.push({team:'Match',type:'Full time!',time:''});
-          }
-          
-          if(fx.id === activeFixtureId) {
-            const timerEl = document.getElementById('timer');
-            if(timerEl) timerEl.textContent = fxTime(fx);
-          }
-          if(fx.id === specViewingId) {
-            const specTimerEl = document.getElementById('spec-timer');
-            if(specTimerEl) specTimerEl.textContent = fxTime(fx);
+          if(elapsedSeconds >= (hd * 2) && !fx.finished) {
+            if (checkAdminAccess) {
+              fx.finished = true;
+              fx.running = false;
+              fx.seconds = hd * 2;
+              fx.timerStartTime = null;
+              if(!fx.events) fx.events=[];
+              fx.events.push({team:'Match',type:'Full time!',time:''});
+              db.ref('fixtures/' + fx.id).update({ running: false, finished: true, seconds: hd * 2, timerStartTime: null, events: fx.events });
+            }
           }
         }
+
+        // Keep visual layouts highly responsive matching matching instances
+        if(fx.id === activeFixtureId) {
+          const timerEl = document.getElementById('timer');
+          if(timerEl) timerEl.textContent = fxTime(fx);
+        }
+        if(fx.id === specViewingId) {
+          const specTimerEl = document.getElementById('spec-timer');
+          if(specTimerEl) specTimerEl.textContent = fxTime(fx);
+        }
       });
-    }, 1000);
+    }, 500); // 500ms intervals prevent skipping frames across heavy connection pipelines
   }
 
   function toggleTimer(){
@@ -566,18 +593,31 @@
     const fx=getActiveFx();if(!fx||fx.finished)return;
     
     let isRunning = !fx.running;
+    let hd = (fx.halfDuration || 40) * 60;
     
-    if(isRunning && fx.halfTime && fx.half === 1) {
-      fx.half = 2;
-      fx.halfTime = false;
-      fx.seconds = (fx.halfDuration || 40) * 60;
+    if(isRunning) {
+      if(fx.halfTime && fx.half === 1) {
+        fx.half = 2;
+        fx.halfTime = false;
+        fx.seconds = hd;
+      }
+      fx.timerStartTime = Date.now() + serverTimeOffset;
+    } else {
+      // If pausing, fold current offset back down into secondary storage
+      if (fx.timerStartTime) {
+        let currentServerTime = Date.now() + serverTimeOffset;
+        let delta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
+        fx.seconds = (fx.seconds || 0) + delta;
+      }
+      fx.timerStartTime = null;
     }
     
     db.ref('fixtures/' + fx.id).update({
       running: isRunning,
       half: fx.half,
       halfTime: fx.halfTime,
-      seconds: fx.seconds || 0
+      seconds: fx.seconds || 0,
+      timerStartTime: fx.timerStartTime
     });
   }
 
@@ -592,11 +632,13 @@
       fx.halfTime=true;
       fx.running=false;
       fx.seconds=hd;
+      fx.timerStartTime = null;
       fx.events.push({team:'Match',type:'Half time called',time:fxTime(fx)});
     } else {
       fx.finished=true;
       fx.running=false;
       fx.seconds=hd*2;
+      fx.timerStartTime = null;
       fx.events.push({team:'Match',type:'Full time called',time:fxTime(fx)});
     }
     db.ref('fixtures/' + fx.id).update(fx);
@@ -612,6 +654,7 @@
     fx.running=false;
     fx.halfTime=false;
     fx.seconds=hd*2;
+    fx.timerStartTime = null;
     if(!fx.events) fx.events=[];
     fx.events.push({team:'Match',type:'Full time!',time:''});
     db.ref('fixtures/' + fx.id).update(fx);
@@ -635,6 +678,7 @@
       fx.halfTime=false;
     }
     fx.running=false;
+    fx.timerStartTime = null;
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
@@ -642,7 +686,7 @@
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
     if(!confirm('Reset all scores, timer and events for this match?'))return;
-    fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;
+    fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;fx.timerStartTime=null;
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
@@ -809,7 +853,7 @@
       halfDuration:Math.min(99,Math.max(1,dur)),
       venue:document.getElementById('fx-venue').value.trim(),
       comp:document.getElementById('fx-comp').value.trim(),
-      score1:0,score2:0,seconds:0,half:1,events:[],running:false,finished:false,halfTime:false
+      score1:0,score2:0,seconds:0,half:1,events:[],running:false,finished:false,halfTime:false,timerStartTime:null
     };
 
     db.ref('fixtures').update(payload, (error) => {
