@@ -263,7 +263,7 @@
     <div class="fixtures-wrap">
       
       <div class="edit-modal" id="edit-fixture-panel">
-        <div class="section-label" style="margin-bottom:14px; color:var(--color-info);">✏️ Edit Fixture</div>
+        <div class="section-label" style="margin-bottom:14px; color:var(--color-info);); text-transform: uppercase;">✏️ Edit Fixture</div>
         <input type="hidden" id="edit-fx-id"/>
         <div class="fixture-form">
           <input class="fixture-input" id="edit-fx-team1" placeholder="Home team" maxlength="40"/>
@@ -421,10 +421,6 @@
 
   // COUNT-UP TIME HELPER (For permanent timeline/history logs)
   function fxRealTime(fx) {
-    if (fx.finished) {
-      return pad(fx.halfDuration * 2 || 80) + ':00';
-    }
-    
     let elapsedSeconds = fx.seconds || 0;
     if (fx.running && fx.timerStartTime) {
       let currentServerTime = Date.now() + serverTimeOffset;
@@ -602,8 +598,7 @@
               fx.seconds = hd;
               fx.timerStartTime = null;
               if(!fx.events) fx.events=[];
-              // AUTOMATIC TIMELINE STAMP: Half Time Called
-              fx.events.push({team:'Match', type:'Half time called', time:fxRealTime(fx)});
+              fx.events.push({team:'Match', type:'Half time called', time:pad(fx.halfDuration)+':00'});
               db.ref('fixtures/' + fx.id).update({ running: false, halfTime: true, seconds: hd, timerStartTime: null, events: fx.events });
             }
           }
@@ -614,8 +609,7 @@
               fx.seconds = hd * 2;
               fx.timerStartTime = null;
               if(!fx.events) fx.events=[];
-              // AUTOMATIC TIMELINE STAMP: Full time!
-              fx.events.push({team:'Match', type:'Full time!', time:fxRealTime(fx)});
+              fx.events.push({team:'Match', type:'Full time!', time:pad(fx.halfDuration * 2)+':00'});
               db.ref('fixtures/' + fx.id).update({ running: false, finished: true, seconds: hd * 2, timerStartTime: null, events: fx.events });
             }
           }
@@ -643,16 +637,14 @@
     if(!fx.events) fx.events = [];
 
     if(isRunning) {
-      // TIMELINE STAMP: Match Started (1st Half Kick-off)
       if(fx.half === 1 && (!fx.seconds || fx.seconds === 0)) {
          fx.events.push({team:'Match', type:'Match started (1st Half)', time:'00:00'});
       }
-      // TIMELINE STAMP: 2nd Half Started
       if(fx.halfTime && fx.half === 1) {
         fx.half = 2;
         fx.halfTime = false;
         fx.seconds = hd;
-        fx.events.push({team:'Match', type:'2nd Half started', time:fxRealTime(fx)});
+        fx.events.push({team:'Match', type:'2nd Half started', time:pad(fx.halfDuration)+':00'});
       }
       fx.timerStartTime = Date.now() + serverTimeOffset;
     } else {
@@ -681,20 +673,31 @@
     
     if(!fx.events) fx.events = [];
     
+    // CALCULATE PRECISE ELAPSED TIME AT MOMENT OF BUTTON CLICK
+    let calculatedSeconds = fx.seconds || 0;
+    if (fx.running && fx.timerStartTime) {
+      let currentServerTime = Date.now() + serverTimeOffset;
+      let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
+      calculatedSeconds += realTimeDelta;
+    }
+
     if(fx.half===1){
+      // Generate timestamp from exact stoppage time rather than forcing default
+      let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
+      
       fx.halfTime=true;
       fx.running=false;
-      fx.seconds=hd;
+      fx.seconds=hd; // Forcing countdown base to the scheduled milestone for 2nd half setup
       fx.timerStartTime = null;
-      // TIMELINE STAMP: Manual Half Time
-      fx.events.push({team:'Match', type:'Half time called', time:fxRealTime(fx)});
+      fx.events.push({team:'Match', type:'Half time called', time: timeStampStr});
     } else {
+      let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
+      
       fx.finished=true;
       fx.running=false;
       fx.seconds=hd*2;
       fx.timerStartTime = null;
-      // TIMELINE STAMP: Manual Full Time
-      fx.events.push({team:'Match', type:'Full time called', time:fxRealTime(fx)});
+      fx.events.push({team:'Match', type:'Full time called', time: timeStampStr});
     }
     db.ref('fixtures/' + fx.id).update(fx);
   }
@@ -705,14 +708,21 @@
     if(!confirm('Are you sure you want to declare Full Time for this game?'))return;
     const hd=(fx.halfDuration||40)*60;
     
+    let calculatedSeconds = fx.seconds || 0;
+    if (fx.running && fx.timerStartTime) {
+      let currentServerTime = Date.now() + serverTimeOffset;
+      let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
+      calculatedSeconds += realTimeDelta;
+    }
+    let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
+
     fx.finished=true;
     fx.running=false;
     fx.halfTime=false;
     fx.seconds=hd*2;
     fx.timerStartTime = null;
     if(!fx.events) fx.events=[];
-    // TIMELINE STAMP: Forced Full Time
-    fx.events.push({team:'Match', type:'Full time!', time:fxRealTime(fx)});
+    fx.events.push({team:'Match', type:'Full time!', time: timeStampStr});
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
