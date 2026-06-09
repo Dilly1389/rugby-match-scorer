@@ -263,7 +263,7 @@
     <div class="fixtures-wrap">
       
       <div class="edit-modal" id="edit-fixture-panel">
-        <div class="section-label" style="margin-bottom:14px; color:var(--color-info);); text-transform: uppercase;">✏️ Edit Fixture</div>
+        <div class="section-label" style="margin-bottom:14px; color:var(--color-info); text-transform: uppercase;">✏️ Edit Fixture</div>
         <input type="hidden" id="edit-fx-id"/>
         <div class="fixture-form">
           <input class="fixture-input" id="edit-fx-team1" placeholder="Home team" maxlength="40"/>
@@ -320,7 +320,7 @@
         <button class="fixture-add-btn" onclick="addFixture()">➕ Add to schedule</button>
       </div>
       
-      <div class="section-label">📅 Scheduled fixtures</div>
+      <div class="section-label">📅 Scheduled fixtures (Sorted by Kick-off Time)</div>
       <div class="fixture-list" id="fixture-list"><div class="empty-fixtures">No fixtures yet</div></div>
     </div>
   </div>
@@ -398,7 +398,6 @@
 
   function pad(n){return String(n).padStart(2,'0');}
   
-  // COUNTDOWN TIME HELPER (For main displays)
   function fxTime(fx){
     let halfSec = (fx.halfDuration || 40) * 60;
     if (fx.finished) return "00:00";
@@ -419,7 +418,6 @@
     return pad(Math.floor(secLeft / 60)) + ':' + pad(secLeft % 60);
   }
 
-  // COUNT-UP TIME HELPER (For permanent timeline/history logs)
   function fxRealTime(fx) {
     let elapsedSeconds = fx.seconds || 0;
     if (fx.running && fx.timerStartTime) {
@@ -435,6 +433,23 @@
   }
   
   function getActiveFx(){return fixtures.find(f=>f.id===activeFixtureId)||null;}
+
+  // SORT FUNCTION: Orders by Time first, then secondary sorts by Date
+  function sortFixturesChronologically(fixturesArray) {
+    return fixturesArray.sort((a, b) => {
+      const timeA = a.time || "00:00";
+      const timeB = b.time || "00:00";
+      
+      // Compare kick-off times
+      const timeCompare = timeA.localeCompare(timeB);
+      if (timeCompare !== 0) return timeCompare;
+      
+      // If times match exactly, fall back to sorting by date
+      const dateA = a.date || "";
+      const dateB = b.date || "";
+      return dateA.localeCompare(dateB);
+    });
+  }
 
   function getLogoHtml(url, className="team-logo") {
     if(url && url.startsWith('http')) {
@@ -461,7 +476,7 @@
     if(!fixtures.length){el.innerHTML='<div class="no-fixtures-msg">No fixtures yet — add them in the Fixtures tab</div>';return;}
     el.innerHTML=fixtures.map(fx=>{
       const isActive=fx.id===activeFixtureId;
-      const meta=[fx.date,fx.time,fx.halfDuration?fx.halfDuration*2+'min match':null,fx.venue].filter(Boolean).join(' · ');
+      const meta=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min match':null, fx.venue].filter(Boolean).join(' · ');
       const badge=fx.finished?'<span class="fp-badge ft">FT</span>':fx.running?'<span class="fp-badge live">Live</span>':'';
       return '<div class="fixture-pick-row'+(isActive?' active-fx':'')+' "onclick="loadFixture('+fx.id+')">'
         +'<div class="fp-left-content">'+getLogoHtml(fx.logo1)+'<div><div class="fp-teams">'+fx.team1+' vs '+fx.team2+'</div>'+(meta?'<div class="fp-meta">'+meta+'</div>':'')+'</div></div>'
@@ -673,7 +688,6 @@
     
     if(!fx.events) fx.events = [];
     
-    // CALCULATE PRECISE ELAPSED TIME AT MOMENT OF BUTTON CLICK
     let calculatedSeconds = fx.seconds || 0;
     if (fx.running && fx.timerStartTime) {
       let currentServerTime = Date.now() + serverTimeOffset;
@@ -682,12 +696,11 @@
     }
 
     if(fx.half===1){
-      // Generate timestamp from exact stoppage time rather than forcing default
       let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
       
       fx.halfTime=true;
       fx.running=false;
-      fx.seconds=hd; // Forcing countdown base to the scheduled milestone for 2nd half setup
+      fx.seconds=hd; 
       fx.timerStartTime = null;
       fx.events.push({team:'Match', type:'Half time called', time: timeStampStr});
     } else {
@@ -860,7 +873,7 @@
     if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures yet</div>';return;}
     el.innerHTML=fixtures.map(fx=>{
       const isActive=fx.id===activeFixtureId;
-      const detail=[fx.date,fx.time?'KO: '+fx.time:null,fx.halfDuration?fx.halfDuration*2+'min':null,fx.venue,fx.comp].filter(Boolean).join(' · ');
+      const detail=[fx.time?'KO: '+fx.time:null, fx.date, fx.halfDuration?fx.halfDuration*2+'min':null, fx.venue, fx.comp].filter(Boolean).join(' · ');
       const badge=fx.finished?'<span class="fx-badge ft">FT</span>':fx.running?'<span class="fx-badge live">Live</span>':'';
       return '<div class="fixture-row'+(isActive?' active-fixture':'')+' ">'
         +'<div class="fixture-left-content">'+getLogoHtml(fx.logo1)+'<div><div class="fixture-teams">'+fx.team1+' vs '+fx.team2
@@ -969,7 +982,8 @@
          db.ref('fixtures').get().then((snap) => {
             if(snap.exists()){
                const fresh = snap.val();
-               fixtures = Object.keys(fresh).map(k => fresh[k]);
+               const rawArr = Object.keys(fresh).map(k => fresh[k]);
+               fixtures = sortFixturesChronologically(rawArr);
                renderFixtureList();
                renderScorerPickList();
                renderSpecFixtureList();
@@ -1002,7 +1016,7 @@
     if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures scheduled yet</div>';return;}
     el.innerHTML=fixtures.map(fx=>{
       const isSelected=fx.id===specViewingId;
-      const detail=[fx.date,fx.time?'KO: '+fx.time:null,fx.halfDuration?fx.halfDuration*2+'min':null,fx.venue].filter(Boolean).join(' · ');
+      const detail=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min':null, fx.venue].filter(Boolean).join(' · ');
       const liveDot=fx.running?'<span class="live-dot"></span> ':'';
       const score='<span style="font-family:var(--font-mono);font-size:14px;font-weight:700;">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span>';
       const badge=fx.finished?'<span class="fx-badge ft" style="margin-right:4px">FT</span>':'';
@@ -1070,7 +1084,8 @@
       const data = snapshot.val();
       
       if(data) {
-        fixtures = Object.keys(data).map(key => data[key]);
+        const unsorted = Object.keys(data).map(key => data[key]);
+        fixtures = sortFixturesChronologically(unsorted);
       } else {
         fixtures = [];
       }
