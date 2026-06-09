@@ -198,7 +198,7 @@
   .spec-fixture-btn.selected .spec-fx-teams { color: var(--color-info); }
   .spec-fx-detail { font-size: 12px; color: var(--color-text2); margin-top: 2px; }
   .spec-fixture-btn.selected .spec-fx-detail { color: var(--color-info); }
-  .spec-score-panel { display: none; }
+  .spec-score-panel panel { display: none; }
   .spec-meta { text-align: center; margin-bottom: 1.5rem; }
   .spec-league { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
   .spec-half { font-size: 13px; color: var(--color-text2); margin-top: 6px; }
@@ -419,10 +419,10 @@
     return pad(Math.floor(secLeft / 60)) + ':' + pad(secLeft % 60);
   }
 
-  // ADDED: COUNT-UP TIME HELPER (For permanent timeline/history logs)
+  // COUNT-UP TIME HELPER (For permanent timeline/history logs)
   function fxRealTime(fx) {
     if (fx.finished) {
-      return pad(fx.halfDuration || 40) + ':00';
+      return pad(fx.halfDuration * 2 || 80) + ':00';
     }
     
     let elapsedSeconds = fx.seconds || 0;
@@ -601,7 +601,10 @@
               fx.running = false;
               fx.seconds = hd;
               fx.timerStartTime = null;
-              db.ref('fixtures/' + fx.id).update({ running: false, halfTime: true, seconds: hd, timerStartTime: null });
+              if(!fx.events) fx.events=[];
+              // AUTOMATIC TIMELINE STAMP: Half Time Called
+              fx.events.push({team:'Match', type:'Half time called', time:fxRealTime(fx)});
+              db.ref('fixtures/' + fx.id).update({ running: false, halfTime: true, seconds: hd, timerStartTime: null, events: fx.events });
             }
           }
           if(elapsedSeconds >= (hd * 2) && !fx.finished) {
@@ -611,7 +614,8 @@
               fx.seconds = hd * 2;
               fx.timerStartTime = null;
               if(!fx.events) fx.events=[];
-              fx.events.push({team:'Match',type:'Full time!',time:fxRealTime(fx)});
+              // AUTOMATIC TIMELINE STAMP: Full time!
+              fx.events.push({team:'Match', type:'Full time!', time:fxRealTime(fx)});
               db.ref('fixtures/' + fx.id).update({ running: false, finished: true, seconds: hd * 2, timerStartTime: null, events: fx.events });
             }
           }
@@ -636,11 +640,19 @@
     let isRunning = !fx.running;
     let hd = (fx.halfDuration || 40) * 60;
     
+    if(!fx.events) fx.events = [];
+
     if(isRunning) {
+      // TIMELINE STAMP: Match Started (1st Half Kick-off)
+      if(fx.half === 1 && (!fx.seconds || fx.seconds === 0)) {
+         fx.events.push({team:'Match', type:'Match started (1st Half)', time:'00:00'});
+      }
+      // TIMELINE STAMP: 2nd Half Started
       if(fx.halfTime && fx.half === 1) {
         fx.half = 2;
         fx.halfTime = false;
         fx.seconds = hd;
+        fx.events.push({team:'Match', type:'2nd Half started', time:fxRealTime(fx)});
       }
       fx.timerStartTime = Date.now() + serverTimeOffset;
     } else {
@@ -657,7 +669,8 @@
       half: fx.half,
       halfTime: fx.halfTime,
       seconds: fx.seconds || 0,
-      timerStartTime: fx.timerStartTime
+      timerStartTime: fx.timerStartTime,
+      events: fx.events
     });
   }
 
@@ -673,15 +686,15 @@
       fx.running=false;
       fx.seconds=hd;
       fx.timerStartTime = null;
-      // UPDATED: Logging manual half-time via count-up time helper
-      fx.events.push({team:'Match',type:'Half time called',time:fxRealTime(fx)});
+      // TIMELINE STAMP: Manual Half Time
+      fx.events.push({team:'Match', type:'Half time called', time:fxRealTime(fx)});
     } else {
       fx.finished=true;
       fx.running=false;
       fx.seconds=hd*2;
       fx.timerStartTime = null;
-      // UPDATED: Logging manual full-time via count-up time helper
-      fx.events.push({team:'Match',type:'Full time called',time:fxRealTime(fx)});
+      // TIMELINE STAMP: Manual Full Time
+      fx.events.push({team:'Match', type:'Full time called', time:fxRealTime(fx)});
     }
     db.ref('fixtures/' + fx.id).update(fx);
   }
@@ -698,8 +711,8 @@
     fx.seconds=hd*2;
     fx.timerStartTime = null;
     if(!fx.events) fx.events=[];
-    // UPDATED: Manual end-game timeline tracking switched to count-up time helper
-    fx.events.push({team:'Match',type:'Full time!',time:fxRealTime(fx)});
+    // TIMELINE STAMP: Forced Full Time
+    fx.events.push({team:'Match', type:'Full time!', time:fxRealTime(fx)});
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
@@ -818,7 +831,6 @@
     const teamName = team === 1 ? fx.team1 : fx.team2;
     
     if(!fx.events) fx.events = [];
-    // UPDATED: Recording event timestamps using count-up match clock fxRealTime(fx)
     fx.events.push({
        team: teamName,
        type: typeText,
