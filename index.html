@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Rugby Match Scorer</title>
+<title>Laerskool Unika Rugby</title>
 <style>
   /* DEFAULT LIGHT THEME (Matches light device setups) */
   :root {
@@ -101,7 +101,7 @@
   .match-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 4px; }
   .timer-display { font-size: 52px; font-weight: 700; font-family: var(--font-mono); color: var(--color-text); line-height: 1; margin-bottom: 4px; }
   .half-label { font-size: 13px; color: var(--color-text2); }
-  .duration-info { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .duration-info { font-size: 12px; color: var(--color-text3); margin-top: 3px; }
   .score-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: stretch; margin-bottom: 1.25rem; }
   .team-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
   .team-name-static { font-size: 15px; font-weight: 700; color: var(--color-text); width: 100%; word-break: break-word; }
@@ -116,11 +116,6 @@
   .vs-col { display: flex; align-items: center; justify-content: center; }
   .vs-text { font-size: 13px; font-weight: 600; color: var(--color-text3); }
   
-  /* PLAYER PICKER SCORER DROPDOWN */
-  .player-assign-box { background: var(--color-surface2); border: 1px solid var(--color-info-border); border-radius: var(--radius-sm); padding: 8px; width: 100%; display: none; margin-top: 4px; flex-direction: column; gap: 6px; text-align: left; }
-  .player-assign-label { font-size: 11px; font-weight: 600; color: var(--color-info); }
-  .player-select { font-size: 12px; background: var(--color-surface); border: 1px solid var(--color-border2); border-radius: 4px; color: var(--color-text); padding: 5px; width: 100%; outline: none; }
-
   /* KICK OUTCOME SELECTION BOX */
   .kick-box { background: var(--color-surface2); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 8px; width: 100%; display: none; margin-top: 4px; flex-direction: column; gap: 6px; text-align: center; }
   .kick-label { font-size: 11px; font-weight: 600; color: var(--color-warning); text-transform: uppercase; }
@@ -156,8 +151,6 @@
   .fixture-input { font-size: 14px; background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); outline: none; width: 100%; text-align: center; }
   .fixture-input:focus { border-color: var(--color-info); }
   .fixture-input::placeholder { color: var(--color-text3); }
-  .fixture-textarea { font-size: 13px; background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); outline: none; width: 100%; resize: vertical; min-height: 52px; font-family: inherit; }
-  .fixture-textarea:focus { border-color: var(--color-info); }
   .fixture-vs { font-size: 13px; font-weight: 600; color: var(--color-text3); text-align: center; }
   .fixture-meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .fixture-meta-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
@@ -169,7 +162,7 @@
   .fixture-left-content { display: flex; align-items: center; gap: 12px; }
   .fixture-teams { font-size: 14px; font-weight: 600; color: var(--color-text); }
   .fixture-detail { font-size: 12px; color: var(--color-text2); margin-top: 3px; }
-  
+
   /* ACTION BUTTONS */
   .fixture-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
   .fx-action-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 4px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 32px; width: 34px; transition: all 0.12s ease; color: var(--color-text); }
@@ -216,7 +209,7 @@
   .spec-event-type { font-size: 13px; color: var(--color-text2); }
   .spec-event-time { font-size: 13px; font-family: var(--font-mono); color: var(--color-text3); }
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
-  .spec-halftime { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
+  .spec-half-time { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
   .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
@@ -274,10 +267,6 @@
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo1" placeholder="Image URL"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo2" placeholder="Image URL"/></div>
         </div>
-        <div class="fixture-meta-grid-2">
-          <div class="input-group"><div class="input-label">Home Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad1" placeholder="Players..."></textarea></div>
-          <div class="input-group"><div class="input-label">Away Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad2" placeholder="Players..."></textarea></div>
-        </div>
         <div class="fixture-meta-grid">
           <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="edit-fx-date" type="date"/></div>
           <div class="input-group"><div class="input-label">Kick-off</div><input class="fixture-input" id="edit-fx-time" type="time"/></div>
@@ -303,10 +292,6 @@
         <div class="fixture-meta-grid-2">
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="fx-logo1" placeholder="Optional image link"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="fx-logo2" placeholder="Optional image link"/></div>
-        </div>
-        <div class="fixture-meta-grid-2">
-          <div class="input-group"><div class="input-label">Home Squad (Commas)</div><textarea class="fixture-textarea" id="fx-squad1" placeholder="Player 1, Player 2, Player 3..."></textarea></div>
-          <div class="input-group"><div class="input-label">Away Squad (Commas)</div><textarea class="fixture-textarea" id="fx-squad2" placeholder="Player 1, Player 2, Player 3..."></textarea></div>
         </div>
         <div class="fixture-meta-grid">
           <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="fx-date" type="date"/></div>
@@ -338,7 +323,7 @@
           <div class="spec-timer" id="spec-timer">00:00</div>
           <div class="spec-half" id="spec-half">1st Half</div>
         </div>
-        <div class="spec-halftime" id="spec-halftime">Half Time</div>
+        <div class="spec-half-time" id="spec-halftime">Half Time</div>
         <div class="spec-scoreline">
           <div class="spec-team">
             <div id="spec-img1-container"></div>
@@ -425,26 +410,19 @@
       let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
       elapsedSeconds += realTimeDelta;
     }
-
     let minutes = Math.floor(elapsedSeconds / 60);
     let seconds = elapsedSeconds % 60;
-    
     return pad(minutes) + ':' + pad(seconds);
   }
   
   function getActiveFx(){return fixtures.find(f=>f.id===activeFixtureId)||null;}
 
-  // SORT FUNCTION: Orders by Time first, then secondary sorts by Date
   function sortFixturesChronologically(fixturesArray) {
     return fixturesArray.sort((a, b) => {
       const timeA = a.time || "00:00";
       const timeB = b.time || "00:00";
-      
-      // Compare kick-off times
       const timeCompare = timeA.localeCompare(timeB);
       if (timeCompare !== 0) return timeCompare;
-      
-      // If times match exactly, fall back to sorting by date
       const dateA = a.date || "";
       const dateB = b.date || "";
       return dateA.localeCompare(dateB);
@@ -461,7 +439,6 @@
   function switchTab(tabName) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    
     const viewEl = document.getElementById('view-' + tabName);
     if (viewEl) viewEl.classList.add('active');
     
@@ -521,11 +498,6 @@
                 <button class="kick-outcome-btn miss" onclick="handleKickOutcome(1, false)">❌ Miss</button>
              </div>
           </div>
-
-          <div class="player-assign-box" id="player-box-1">
-             <div class="player-assign-label">Select Scorer:</div>
-             <select class="player-select" id="player-select-1" onchange="commitScore(1)"></select>
-          </div>
         </div>
         <div class="vs-col"><div class="vs-text">VS</div></div>
         <div class="team-card">
@@ -546,11 +518,6 @@
                 <button class="kick-outcome-btn success" onclick="handleKickOutcome(2, true)">✅ Score</button>
                 <button class="kick-outcome-btn miss" onclick="handleKickOutcome(2, false)">❌ Miss</button>
              </div>
-          </div>
-
-          <div class="player-assign-box" id="player-box-2">
-             <div class="player-assign-label">Select Scorer:</div>
-             <select class="player-select" id="player-select-2" onchange="commitScore(2)"></select>
           </div>
         </div>
       </div>
@@ -586,8 +553,7 @@
     const fx=getActiveFx(); const evts=fx?fx.events||[]:[];
     if(!evts.length){el.innerHTML='<div class="no-events">No events yet — start scoring!</div>';return;}
     el.innerHTML=evts.slice().reverse().map(e=> {
-      const playerString = e.player ? ` (${e.player})` : '';
-      return '<div class="event-item"><span><span class="event-type">'+e.team+'</span> — '+e.type+playerString+'</span>'+(e.time?'<span>'+e.time+'</span>':'')+'</div>'
+      return '<div class="event-item"><span><span class="event-type">'+e.team+'</span> — '+e.type+'</span>'+(e.time?'<span>'+e.time+'</span>':'')+'</div>'
     }).join('');
   }
 
@@ -645,10 +611,8 @@
   function toggleTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    
     let isRunning = !fx.running;
     let hd = (fx.halfDuration || 40) * 60;
-    
     if(!fx.events) fx.events = [];
 
     if(isRunning) {
@@ -685,7 +649,6 @@
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
     const hd=(fx.halfDuration||40)*60;
-    
     if(!fx.events) fx.events = [];
     
     let calculatedSeconds = fx.seconds || 0;
@@ -697,7 +660,6 @@
 
     if(fx.half===1){
       let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
-      
       fx.halfTime=true;
       fx.running=false;
       fx.seconds=hd; 
@@ -705,7 +667,6 @@
       fx.events.push({team:'Match', type:'Half time called', time: timeStampStr});
     } else {
       let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
-      
       fx.finished=true;
       fx.running=false;
       fx.seconds=hd*2;
@@ -775,15 +736,13 @@
 
     document.getElementById('kick-box-1').style.display = 'none';
     document.getElementById('kick-box-2').style.display = 'none';
-    document.getElementById('player-box-1').style.display = 'none';
-    document.getElementById('player-box-2').style.display = 'none';
 
     stagedScore = { team, pts, isKick: (pts === 1 || pts === 2 || pts === 3), kickSuccessful: true };
 
     if(stagedScore.isKick) {
        document.getElementById('kick-box-' + team).style.display = 'flex';
     } else {
-       stagePlayerSelection(team);
+       commitScore(team);
     }
   }
 
@@ -791,45 +750,12 @@
     if(!stagedScore) return;
     stagedScore.kickSuccessful = wasSuccessful;
     document.getElementById('kick-box-' + team).style.display = 'none';
-    stagePlayerSelection(team);
+    commitScore(team);
   }
 
-  function stagePlayerSelection(team) {
+  function commitScore(team) {
     const fx=getActiveFx(); if(!fx || !stagedScore) return;
     
-    if(stagedScore.pts === -1) {
-       commitScore(team, "");
-       return;
-    }
-
-    const squadString = team === 1 ? fx.squad1 : fx.squad2;
-    if(!squadString) {
-       commitScore(team, "");
-       return;
-    }
-
-    const players = squadString.split(',').map(p => p.trim()).filter(Boolean);
-    if(players.length === 0) {
-       commitScore(team, "");
-       return;
-    }
-
-    const selectEl = document.getElementById('player-select-' + team);
-    selectEl.innerHTML = '<option value="" disabled selected>-- Choose Player --</option>' + 
-                         players.map(p => `<option value="${p}">${p}</option>`).join('') +
-                         '<option value="">Unknown / Anonymous</option>';
-
-    document.getElementById('player-box-' + team).style.display = 'flex';
-  }
-
-  function commitScore(team, customPlayer = null) {
-    const fx=getActiveFx(); if(!fx || !stagedScore) return;
-    
-    let chosenPlayer = customPlayer;
-    if(chosenPlayer === null) {
-       chosenPlayer = document.getElementById('player-select-' + team).value;
-    }
-
     let finalPointsToAdd = stagedScore.pts;
     if (stagedScore.pts === 1) {
        finalPointsToAdd = 3; 
@@ -857,14 +783,10 @@
     fx.events.push({
        team: teamName,
        type: typeText,
-       time: fxRealTime(fx),
-       player: chosenPlayer || ""
+       time: fxRealTime(fx)
     });
 
-    document.getElementById('player-box-1').style.display = 'none';
-    document.getElementById('player-box-2').style.display = 'none';
     stagedScore = null;
-
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
@@ -900,8 +822,6 @@
      document.getElementById('edit-fx-team2').value = fx.team2 || '';
      document.getElementById('edit-fx-logo1').value = fx.logo1 || '';
      document.getElementById('edit-fx-logo2').value = fx.logo2 || '';
-     document.getElementById('edit-fx-squad1').value = fx.squad1 || '';
-     document.getElementById('edit-fx-squad2').value = fx.squad2 || '';
      document.getElementById('edit-fx-date').value = fx.date || '';
      document.getElementById('edit-fx-time').value = fx.time || '15:00';
      document.getElementById('edit-fx-duration').value = fx.halfDuration || 40;
@@ -932,8 +852,6 @@
         team2: t2,
         logo1: document.getElementById('edit-fx-logo1').value.trim(),
         logo2: document.getElementById('edit-fx-logo2').value.trim(),
-        squad1: document.getElementById('edit-fx-squad1').value.trim(),
-        squad2: document.getElementById('edit-fx-squad2').value.trim(),
         date: document.getElementById('edit-fx-date').value || '',
         time: document.getElementById('edit-fx-time').value || '15:00',
         halfDuration: Math.min(99, Math.max(1, dur)),
@@ -956,7 +874,7 @@
     const t2=document.getElementById('fx-team2').value.trim();
     if(!t1||!t2){alert('Please enter both team names.');return;}
     const dur=parseInt(document.getElementById('fx-duration').value)||40;
-    
+
     const newId = Date.now();
     const payload = {};
     payload[newId] = {
@@ -965,8 +883,6 @@
       team2:t2,
       logo1:document.getElementById('fx-logo1').value.trim(),
       logo2:document.getElementById('fx-logo2').value.trim(),
-      squad1:document.getElementById('fx-squad1').value.trim(),
-      squad2:document.getElementById('fx-squad2').value.trim(),
       date:document.getElementById('fx-date').value || '',
       time:document.getElementById('fx-time').value || '15:00',
       halfDuration:Math.min(99,Math.max(1,dur)),
@@ -992,12 +908,11 @@
       }
     });
 
+    // Reset inputs
     document.getElementById('fx-team1').value='';
     document.getElementById('fx-team2').value='';
     document.getElementById('fx-logo1').value='';
     document.getElementById('fx-logo2').value='';
-    document.getElementById('fx-squad1').value='';
-    document.getElementById('fx-squad2').value='';
     document.getElementById('fx-venue').value='';
     document.getElementById('fx-comp').value='';
     document.getElementById('fx-duration').value='40';
@@ -1053,7 +968,6 @@
     
     document.getElementById('spec-img1-container').innerHTML = getLogoHtml(fx.logo1, 'team-logo-lg');
     document.getElementById('spec-img2-container').innerHTML = getLogoHtml(fx.logo2, 'team-logo-lg');
-    
     document.getElementById('spec-halftime').style.display=fx.halfTime?'block':'none';
     
     const l1=document.getElementById('spec-lead1');
@@ -1066,13 +980,11 @@
     const evts=fx.events||[];
     if(!evts.length){evEl.innerHTML='<div class="spec-no-events">No events yet</div>';return;}
     evEl.innerHTML=evts.slice().reverse().map(e=>{
-      const identity = e.player ? `<span class="spec-event-type" style="color:var(--color-info);font-weight:500;">${e.player}</span>` : '';
       return `
       <div class="spec-event-row">
         <div class="spec-event-main">
            <span class="spec-event-team">${e.team}</span>
            <span class="spec-event-type">${e.type}</span>
-           ${identity}
         </div>
         <span class="spec-event-time">${e.time}</span>
       </div>
@@ -1082,7 +994,6 @@
   function initRealtimeSync(){
     db.ref('fixtures').on('value', (snapshot) => {
       const data = snapshot.val();
-      
       if(data) {
         const unsorted = Object.keys(data).map(key => data[key]);
         fixtures = sortFixturesChronologically(unsorted);
@@ -1099,15 +1010,12 @@
         if(currentFx) {
           const timerEl = document.getElementById('timer');
           if(timerEl) timerEl.textContent = fxTime(currentFx);
-          
           const s1 = document.getElementById('score1');
           if(s1) s1.textContent = currentFx.score1 || 0;
           const s2 = document.getElementById('score2');
           if(s2) s2.textContent = currentFx.score2 || 0;
-          
           const hl = document.getElementById('half-label');
           if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : '2nd Half');
-          
           const hb = document.getElementById('halftime-banner');
           if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
           
@@ -1131,7 +1039,6 @@
     if (role === 'spectator') {
       document.getElementById('app-tabs').style.display = 'none';
       switchTab('spectator');
-      
       setTimeout(() => {
         if(fixtures.length === 1){
           specSelectFixture(fixtures[0].id);
