@@ -211,7 +211,7 @@
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
   .spec-half-time { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
-  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
+  .live-dot { inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
@@ -737,7 +737,22 @@
     document.getElementById('kick-box-1').style.display = 'none';
     document.getElementById('kick-box-2').style.display = 'none';
 
-    stagedScore = { team, pts, isKick: (pts === 1 || pts === 2 || pts === 3), kickSuccessful: true };
+    // Query for player jersey number selection
+    let playerNum = "";
+    if (pts !== -1) {
+      const promptInput = prompt("Enter player jersey number (Optional):");
+      if (promptInput !== null && promptInput.trim() !== "") {
+        playerNum = `(#${promptInput.trim()})`;
+      }
+    }
+
+    stagedScore = { 
+      team, 
+      pts, 
+      isKick: (pts === 1 || pts === 2 || pts === 3), 
+      kickSuccessful: true,
+      playerStr: playerNum 
+    };
 
     if(stagedScore.isKick) {
        document.getElementById('kick-box-' + team).style.display = 'flex';
@@ -762,6 +777,9 @@
     }
 
     let typeText = scoreTypeMap[String(stagedScore.pts)] || (finalPointsToAdd + ' pts');
+    if (stagedScore.playerStr) {
+      typeText = `${typeText} ${stagedScore.playerStr}`;
+    }
     
     if(stagedScore.isKick) {
        if(stagedScore.kickSuccessful) {
@@ -1015,7 +1033,7 @@
           const s2 = document.getElementById('score2');
           if(s2) s2.textContent = currentFx.score2 || 0;
           const hl = document.getElementById('half-label');
-          if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : '2nd Half');
+          if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : (currentFx.half === 2 ? '2nd Half' : ''));
           const hb = document.getElementById('halftime-banner');
           if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
           
