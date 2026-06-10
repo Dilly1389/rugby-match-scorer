@@ -170,15 +170,6 @@
   .fixture-teams { font-size: 14px; font-weight: 600; color: var(--color-text); }
   .fixture-detail { font-size: 12px; color: var(--color-text2); margin-top: 3px; }
   
-  /* SQUAD BUILDER SECTION */
-  .squad-builder-box { background: var(--color-surface2); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 12px; border: 1px solid var(--color-border); }
-  .squad-title { font-size: 12px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; border-bottom: 1px solid var(--color-border2); padding-bottom: 4px; }
-  .squad-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .squad-list-inputs { display: flex; flex-direction: column; gap: 4px; max-height: 240px; overflow-y: auto; padding-right: 4px; }
-  .squad-slot-row { display: grid; grid-template-columns: 24px 1fr; align-items: center; gap: 4px; }
-  .squad-number-lbl { font-size: 11px; font-family: var(--font-mono); font-weight: 700; color: var(--color-text3); text-align: center; }
-  .squad-slot-input { font-size: 12px; padding: 4px 6px; border-radius: 4px; border: 1px solid var(--color-border2); background: var(--color-surface); color: var(--color-text); }
-
   /* ACTION BUTTONS */
   .fixture-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
   .fx-action-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 4px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 32px; width: 34px; transition: all 0.12s ease; color: var(--color-text); }
@@ -225,7 +216,7 @@
   .spec-event-type { font-size: 13px; color: var(--color-text2); }
   .spec-event-time { font-size: 13px; font-family: var(--font-mono); color: var(--color-text3); }
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
-  .spec-half-time { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
+  .spec-halftime { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
   .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
@@ -241,7 +232,6 @@
     .score-display { font-size: 48px; }
     .fixture-meta-grid { grid-template-columns: 1fr 1fr; }
     .fixture-meta-grid > :last-child { grid-column: span 2; }
-    .squad-grid-container { grid-template-columns: 1fr; gap: 8px; }
   }
 </style>
 
@@ -284,18 +274,10 @@
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo1" placeholder="Image URL"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo2" placeholder="Image URL"/></div>
         </div>
-
-        <div class="squad-grid-container" style="margin-bottom:12px;">
-           <div class="squad-builder-box">
-              <div class="squad-title">🏠 Edit Home Squad (1-23)</div>
-              <div class="squad-list-inputs" id="edit-squad1-slots"></div>
-           </div>
-           <div class="squad-builder-box">
-              <div class="squad-title">✈️ Edit Away Squad (1-23)</div>
-              <div class="squad-list-inputs" id="edit-squad2-slots"></div>
-           </div>
+        <div class="fixture-meta-grid-2">
+          <div class="input-group"><div class="input-label">Home Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad1" placeholder="Players..."></textarea></div>
+          <div class="input-group"><div class="input-label">Away Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad2" placeholder="Players..."></textarea></div>
         </div>
-
         <div class="fixture-meta-grid">
           <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="edit-fx-date" type="date"/></div>
           <div class="input-group"><div class="input-label">Kick-off</div><input class="fixture-input" id="edit-fx-time" type="time"/></div>
@@ -322,18 +304,10 @@
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="fx-logo1" placeholder="Optional image link"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="fx-logo2" placeholder="Optional image link"/></div>
         </div>
-
-        <div class="squad-grid-container" style="margin-bottom: 12px;">
-           <div class="squad-builder-box">
-              <div class="squad-title">🏠 Home Match Squad (1-23)</div>
-              <div class="squad-list-inputs" id="create-squad1-slots"></div>
-           </div>
-           <div class="squad-builder-box">
-              <div class="squad-title">✈️ Away Match Squad (1-23)</div>
-              <div class="squad-list-inputs" id="create-squad2-slots"></div>
-           </div>
+        <div class="fixture-meta-grid-2">
+          <div class="input-group"><div class="input-label">Home Squad (Commas)</div><textarea class="fixture-textarea" id="fx-squad1" placeholder="Player 1, Player 2, Player 3..."></textarea></div>
+          <div class="input-group"><div class="input-label">Away Squad (Commas)</div><textarea class="fixture-textarea" id="fx-squad2" placeholder="Player 1, Player 2, Player 3..."></textarea></div>
         </div>
-
         <div class="fixture-meta-grid">
           <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="fx-date" type="date"/></div>
           <div class="input-group"><div class="input-label">Kick-off</div><input class="fixture-input" id="fx-time" type="time" value="15:00"/></div>
@@ -364,7 +338,7 @@
           <div class="spec-timer" id="spec-timer">00:00</div>
           <div class="spec-half" id="spec-half">1st Half</div>
         </div>
-        <div class="spec-half-time" id="spec-halftime">Half Time</div>
+        <div class="spec-halftime" id="spec-halftime">Half Time</div>
         <div class="spec-scoreline">
           <div class="spec-team">
             <div id="spec-img1-container"></div>
@@ -424,21 +398,6 @@
 
   function pad(n){return String(n).padStart(2,'0');}
   
-  // Render Squad Entry Slots (1-23) dynamically into UI fields
-  function generateSquadSlotsHTML(prefix) {
-     let html = '';
-     for(let i = 1; i <= 23; i++) {
-        let designation = i <= 15 ? 'Starting' : 'Sub';
-        html += `
-          <div class="squad-slot-row">
-             <div class="squad-number-lbl" title="${designation}">${i}</div>
-             <input class="squad-slot-input" id="${prefix}-p-${i}" placeholder="Player Name" maxlength="40" />
-          </div>
-        `;
-     }
-     return html;
-  }
-
   function fxTime(fx){
     let halfSec = (fx.halfDuration || 40) * 60;
     if (fx.finished) return "00:00";
@@ -466,19 +425,26 @@
       let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
       elapsedSeconds += realTimeDelta;
     }
+
     let minutes = Math.floor(elapsedSeconds / 60);
     let seconds = elapsedSeconds % 60;
+    
     return pad(minutes) + ':' + pad(seconds);
   }
   
   function getActiveFx(){return fixtures.find(f=>f.id===activeFixtureId)||null;}
 
+  // SORT FUNCTION: Orders by Time first, then secondary sorts by Date
   function sortFixturesChronologically(fixturesArray) {
     return fixturesArray.sort((a, b) => {
       const timeA = a.time || "00:00";
       const timeB = b.time || "00:00";
+      
+      // Compare kick-off times
       const timeCompare = timeA.localeCompare(timeB);
       if (timeCompare !== 0) return timeCompare;
+      
+      // If times match exactly, fall back to sorting by date
       const dateA = a.date || "";
       const dateB = b.date || "";
       return dateA.localeCompare(dateB);
@@ -495,6 +461,7 @@
   function switchTab(tabName) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    
     const viewEl = document.getElementById('view-' + tabName);
     if (viewEl) viewEl.classList.add('active');
     
@@ -678,8 +645,10 @@
   function toggleTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
+    
     let isRunning = !fx.running;
     let hd = (fx.halfDuration || 40) * 60;
+    
     if(!fx.events) fx.events = [];
 
     if(isRunning) {
@@ -716,6 +685,7 @@
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
     const hd=(fx.halfDuration||40)*60;
+    
     if(!fx.events) fx.events = [];
     
     let calculatedSeconds = fx.seconds || 0;
@@ -727,6 +697,7 @@
 
     if(fx.half===1){
       let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
+      
       fx.halfTime=true;
       fx.running=false;
       fx.seconds=hd; 
@@ -734,6 +705,7 @@
       fx.events.push({team:'Match', type:'Half time called', time: timeStampStr});
     } else {
       let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
+      
       fx.finished=true;
       fx.running=false;
       fx.seconds=hd*2;
@@ -830,37 +802,22 @@
        return;
     }
 
-    // Get 1-23 mapping dictionary array
-    const roster = team === 1 ? (fx.roster1 || {}) : (fx.roster2 || {});
-    
-    let hasPlayers = false;
-    let startersHtml = '<optgroup label="Starting XV (1-15)">';
-    let finishersHtml = '<optgroup label="Finishers / Subs (16-23)">';
-
-    for (let i = 1; i <= 15; i++) {
-       if (roster[i]) {
-          startersHtml += `<option value="#${i} ${roster[i]}">#${i} - ${roster[i]}</option>`;
-          hasPlayers = true;
-       }
+    const squadString = team === 1 ? fx.squad1 : fx.squad2;
+    if(!squadString) {
+       commitScore(team, "");
+       return;
     }
-    for (let i = 16; i <= 23; i++) {
-       if (roster[i]) {
-          finishersHtml += `<option value="#${i} ${roster[i]}">#${i} - ${roster[i]} (Sub)</option>`;
-          hasPlayers = true;
-       }
-    }
-    startersHtml += '</optgroup>';
-    finishersHtml += '</optgroup>';
 
-    if(!hasPlayers) {
+    const players = squadString.split(',').map(p => p.trim()).filter(Boolean);
+    if(players.length === 0) {
        commitScore(team, "");
        return;
     }
 
     const selectEl = document.getElementById('player-select-' + team);
-    selectEl.innerHTML = '<option value="" disabled selected>-- Choose Scorer --</option>' + 
-                         startersHtml + finishersHtml +
-                         '<option value="">Unknown / Penalty Try</option>';
+    selectEl.innerHTML = '<option value="" disabled selected>-- Choose Player --</option>' + 
+                         players.map(p => `<option value="${p}">${p}</option>`).join('') +
+                         '<option value="">Unknown / Anonymous</option>';
 
     document.getElementById('player-box-' + team).style.display = 'flex';
   }
@@ -943,19 +900,13 @@
      document.getElementById('edit-fx-team2').value = fx.team2 || '';
      document.getElementById('edit-fx-logo1').value = fx.logo1 || '';
      document.getElementById('edit-fx-logo2').value = fx.logo2 || '';
+     document.getElementById('edit-fx-squad1').value = fx.squad1 || '';
+     document.getElementById('edit-fx-squad2').value = fx.squad2 || '';
      document.getElementById('edit-fx-date').value = fx.date || '';
      document.getElementById('edit-fx-time').value = fx.time || '15:00';
      document.getElementById('edit-fx-duration').value = fx.halfDuration || 40;
      document.getElementById('edit-fx-venue').value = fx.venue || '';
      document.getElementById('edit-fx-comp').value = fx.comp || '';
-
-     // Populate edit panel slots
-     const r1 = fx.roster1 || {};
-     const r2 = fx.roster2 || {};
-     for (let i = 1; i <= 23; i++) {
-        document.getElementById(`edit-p-${i}`).value = r1[i] || '';
-        document.getElementById(`edit-away-p-${i}`).value = r2[i] || '';
-     }
 
      panel.scrollIntoView({ behavior: 'smooth' });
   }
@@ -976,22 +927,13 @@
 
      const dur = parseInt(document.getElementById('edit-fx-duration').value) || 40;
 
-     // Package up 23 player mappings
-     let roster1 = {}, roster2 = {};
-     for(let i = 1; i <= 23; i++) {
-        let val1 = document.getElementById(`edit-p-${i}`).value.trim();
-        let val2 = document.getElementById(`edit-away-p-${i}`).value.trim();
-        if(val1) roster1[i] = val1;
-        if(val2) roster2[i] = val2;
-     }
-
      const updatePayload = {
         team1: t1,
         team2: t2,
         logo1: document.getElementById('edit-fx-logo1').value.trim(),
         logo2: document.getElementById('edit-fx-logo2').value.trim(),
-        roster1: roster1,
-        roster2: roster2,
+        squad1: document.getElementById('edit-fx-squad1').value.trim(),
+        squad2: document.getElementById('edit-fx-squad2').value.trim(),
         date: document.getElementById('edit-fx-date').value || '',
         time: document.getElementById('edit-fx-time').value || '15:00',
         halfDuration: Math.min(99, Math.max(1, dur)),
@@ -1015,15 +957,6 @@
     if(!t1||!t2){alert('Please enter both team names.');return;}
     const dur=parseInt(document.getElementById('fx-duration').value)||40;
     
-    // Scrape rosters
-    let roster1 = {}, roster2 = {};
-    for (let i = 1; i <= 23; i++) {
-       let val1 = document.getElementById(`create-p-${i}`).value.trim();
-       let val2 = document.getElementById(`create-away-p-${i}`).value.trim();
-       if (val1) roster1[i] = val1;
-       if (val2) roster2[i] = val2;
-    }
-
     const newId = Date.now();
     const payload = {};
     payload[newId] = {
@@ -1032,8 +965,8 @@
       team2:t2,
       logo1:document.getElementById('fx-logo1').value.trim(),
       logo2:document.getElementById('fx-logo2').value.trim(),
-      roster1: roster1,
-      roster2: roster2,
+      squad1:document.getElementById('fx-squad1').value.trim(),
+      squad2:document.getElementById('fx-squad2').value.trim(),
       date:document.getElementById('fx-date').value || '',
       time:document.getElementById('fx-time').value || '15:00',
       halfDuration:Math.min(99,Math.max(1,dur)),
@@ -1059,18 +992,15 @@
       }
     });
 
-    // Reset inputs
     document.getElementById('fx-team1').value='';
     document.getElementById('fx-team2').value='';
     document.getElementById('fx-logo1').value='';
     document.getElementById('fx-logo2').value='';
+    document.getElementById('fx-squad1').value='';
+    document.getElementById('fx-squad2').value='';
     document.getElementById('fx-venue').value='';
     document.getElementById('fx-comp').value='';
     document.getElementById('fx-duration').value='40';
-    for (let i = 1; i <= 23; i++) {
-       document.getElementById(`create-p-${i}`).value = '';
-       document.getElementById(`create-away-p-${i}`).value = '';
-    }
   }
 
   function deleteFixture(id){
@@ -1123,6 +1053,7 @@
     
     document.getElementById('spec-img1-container').innerHTML = getLogoHtml(fx.logo1, 'team-logo-lg');
     document.getElementById('spec-img2-container').innerHTML = getLogoHtml(fx.logo2, 'team-logo-lg');
+    
     document.getElementById('spec-halftime').style.display=fx.halfTime?'block':'none';
     
     const l1=document.getElementById('spec-lead1');
@@ -1151,6 +1082,7 @@
   function initRealtimeSync(){
     db.ref('fixtures').on('value', (snapshot) => {
       const data = snapshot.val();
+      
       if(data) {
         const unsorted = Object.keys(data).map(key => data[key]);
         fixtures = sortFixturesChronologically(unsorted);
@@ -1167,12 +1099,15 @@
         if(currentFx) {
           const timerEl = document.getElementById('timer');
           if(timerEl) timerEl.textContent = fxTime(currentFx);
+          
           const s1 = document.getElementById('score1');
           if(s1) s1.textContent = currentFx.score1 || 0;
           const s2 = document.getElementById('score2');
           if(s2) s2.textContent = currentFx.score2 || 0;
+          
           const hl = document.getElementById('half-label');
           if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : '2nd Half');
+          
           const hb = document.getElementById('halftime-banner');
           if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
           
@@ -1188,12 +1123,6 @@
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    // Generate Slot Matrices
-    document.getElementById('create-squad1-slots').innerHTML = generateSquadSlotsHTML('create');
-    document.getElementById('create-squad2-slots').innerHTML = generateSquadSlotsHTML('create-away');
-    document.getElementById('edit-squad1-slots').innerHTML = generateSquadSlotsHTML('edit');
-    document.getElementById('edit-squad2-slots').innerHTML = generateSquadSlotsHTML('edit-away');
-
     initRealtimeSync();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -1202,6 +1131,7 @@
     if (role === 'spectator') {
       document.getElementById('app-tabs').style.display = 'none';
       switchTab('spectator');
+      
       setTimeout(() => {
         if(fixtures.length === 1){
           specSelectFixture(fixtures[0].id);
