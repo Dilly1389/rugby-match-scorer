@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Rugby Match Scorer</title>
+<title>Laerskool Unika Rugby</title>
 <style>
   /* DEFAULT LIGHT THEME (Matches light device setups) */
   :root {
@@ -101,7 +101,7 @@
   .match-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 4px; }
   .timer-display { font-size: 52px; font-weight: 700; font-family: var(--font-mono); color: var(--color-text); line-height: 1; margin-bottom: 4px; }
   .half-label { font-size: 13px; color: var(--color-text2); }
-  .duration-info { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .duration-info { font-size: 12px; color: var(--color-text3); margin-top: 3px; }
   .score-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: stretch; margin-bottom: 1.25rem; }
   .team-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
   .team-name-static { font-size: 15px; font-weight: 700; color: var(--color-text); width: 100%; word-break: break-word; }
@@ -115,19 +115,6 @@
   .minus-btn:hover { background: var(--color-danger-bg); color: var(--color-danger); border-color: var(--color-danger-border); }
   .vs-col { display: flex; align-items: center; justify-content: center; }
   .vs-text { font-size: 13px; font-weight: 600; color: var(--color-text3); }
-  
-  /* PLAYER PICKER SCORER DROPDOWN */
-  .player-assign-box { background: var(--color-surface2); border: 1px solid var(--color-info-border); border-radius: var(--radius-sm); padding: 8px; width: 100%; display: none; margin-top: 4px; flex-direction: column; gap: 6px; text-align: left; }
-  .player-assign-label { font-size: 11px; font-weight: 600; color: var(--color-info); }
-  .player-select { font-size: 12px; background: var(--color-surface); border: 1px solid var(--color-border2); border-radius: 4px; color: var(--color-text); padding: 5px; width: 100%; outline: none; }
-
-  /* KICK OUTCOME SELECTION BOX */
-  .kick-box { background: var(--color-surface2); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 8px; width: 100%; display: none; margin-top: 4px; flex-direction: column; gap: 6px; text-align: center; }
-  .kick-label { font-size: 11px; font-weight: 600; color: var(--color-warning); text-transform: uppercase; }
-  .kick-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .kick-outcome-btn { padding: 6px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; border: 1px solid var(--color-border); }
-  .kick-outcome-btn.success { background: var(--color-success-bg); color: var(--color-success); border-color: var(--color-success-border); }
-  .kick-outcome-btn.miss { background: var(--color-danger-bg); color: var(--color-danger); border-color: var(--color-danger-border); }
 
   .ctrl-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
   .ctrl-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 9px 18px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.1s; }
@@ -156,8 +143,6 @@
   .fixture-input { font-size: 14px; background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); outline: none; width: 100%; text-align: center; }
   .fixture-input:focus { border-color: var(--color-info); }
   .fixture-input::placeholder { color: var(--color-text3); }
-  .fixture-textarea { font-size: 13px; background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); outline: none; width: 100%; resize: vertical; min-height: 52px; font-family: inherit; }
-  .fixture-textarea:focus { border-color: var(--color-info); }
   .fixture-vs { font-size: 13px; font-weight: 600; color: var(--color-text3); text-align: center; }
   .fixture-meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .fixture-meta-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
@@ -168,8 +153,8 @@
   .fixture-row.active-fixture { border-color: var(--color-info); }
   .fixture-left-content { display: flex; align-items: center; gap: 12px; }
   .fixture-teams { font-size: 14px; font-weight: 600; color: var(--color-text); }
-  .fixture-detail { font-size: 12px; color: var(--color-text2); margin-top: 3px; }
-  
+  .fixture-detail = { font-size: 12px; color: var(--color-text2); margin-top: 3px; }
+
   /* ACTION BUTTONS */
   .fixture-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
   .fx-action-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 4px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 32px; width: 34px; transition: all 0.12s ease; color: var(--color-text); }
@@ -216,7 +201,7 @@
   .spec-event-type { font-size: 13px; color: var(--color-text2); }
   .spec-event-time { font-size: 13px; font-family: var(--font-mono); color: var(--color-text3); }
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
-  .spec-halftime { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
+  .spec-half-time { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
   .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
@@ -274,10 +259,6 @@
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo1" placeholder="Image URL"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo2" placeholder="Image URL"/></div>
         </div>
-        <div class="fixture-meta-grid-2">
-          <div class="input-group"><div class="input-label">Home Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad1" placeholder="Players..."></textarea></div>
-          <div class="input-group"><div class="input-label">Away Squad (Commas)</div><textarea class="fixture-textarea" id="edit-fx-squad2" placeholder="Players..."></textarea></div>
-        </div>
         <div class="fixture-meta-grid">
           <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="edit-fx-date" type="date"/></div>
           <div class="input-group"><div class="input-label">Kick-off</div><input class="fixture-input" id="edit-fx-time" type="time"/></div>
@@ -303,10 +284,6 @@
         <div class="fixture-meta-grid-2">
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="fx-logo1" placeholder="Optional image link"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="fx-logo2" placeholder="Optional image link"/></div>
-        </div>
-        <div class="fixture-meta-grid-2">
-          <div class="input-group"><div class="input-label">Home Squad (Commas)</div><textarea class="fixture-textarea" id="fx-squad1" placeholder="Player 1, Player 2, Player 3..."></textarea></div>
-          <div class="input-group"><div class="input-label">Away Squad (Commas)</div><textarea class="fixture-textarea" id="fx-squad2" placeholder="Player 1, Player 2, Player 3..."></textarea></div>
         </div>
         <div class="fixture-meta-grid">
           <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="fx-date" type="date"/></div>
@@ -338,7 +315,7 @@
           <div class="spec-timer" id="spec-timer">00:00</div>
           <div class="spec-half" id="spec-half">1st Half</div>
         </div>
-        <div class="spec-halftime" id="spec-halftime">Half Time</div>
+        <div class="spec-half-time" id="spec-halftime">Half Time</div>
         <div class="spec-scoreline">
           <div class="spec-team">
             <div id="spec-img1-container"></div>
@@ -393,43 +370,18 @@
 
   let fixtures=[], activeFixtureId=null, specViewingId=null;
   let interval=null;
-  let stagedScore = null; 
-  const scoreTypeMap={5:'Try',2:'Conversion',3:'Penalty Kick',3:'Drop Goal','-1':'Point removed'};
+  const scoreTypeMap={5:'Try',2:'Conversion',3:'Penalty',1:'Drop Goal','-1':'Points removed'};
 
   function pad(n){return String(n).padStart(2,'0');}
   
   function fxTime(fx){
-    let halfSec = (fx.halfDuration || 40) * 60;
-    if (fx.finished) return "00:00";
-    
     let elapsedSeconds = fx.seconds || 0;
     if (fx.running && fx.timerStartTime) {
       let currentServerTime = Date.now() + serverTimeOffset;
       let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
       elapsedSeconds += realTimeDelta;
     }
-
-    let secLeft = 0;
-    if (fx.half === 1) {
-      secLeft = Math.max(0, halfSec - elapsedSeconds);
-    } else {
-      secLeft = Math.max(0, (halfSec * 2) - elapsedSeconds);
-    }
-    return pad(Math.floor(secLeft / 60)) + ':' + pad(secLeft % 60);
-  }
-
-  function fxRealTime(fx) {
-    let elapsedSeconds = fx.seconds || 0;
-    if (fx.running && fx.timerStartTime) {
-      let currentServerTime = Date.now() + serverTimeOffset;
-      let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
-      elapsedSeconds += realTimeDelta;
-    }
-
-    let minutes = Math.floor(elapsedSeconds / 60);
-    let seconds = elapsedSeconds % 60;
-    
-    return pad(minutes) + ':' + pad(seconds);
+    return pad(Math.floor(elapsedSeconds / 60)) + ':' + pad(elapsedSeconds % 60);
   }
   
   function getActiveFx(){return fixtures.find(f=>f.id===activeFixtureId)||null;}
@@ -438,10 +390,8 @@
     return fixturesArray.sort((a, b) => {
       const timeA = a.time || "00:00";
       const timeB = b.time || "00:00";
-      
       const timeCompare = timeA.localeCompare(timeB);
       if (timeCompare !== 0) return timeCompare;
-      
       const dateA = a.date || "";
       const dateB = b.date || "";
       return dateA.localeCompare(dateB);
@@ -458,7 +408,6 @@
   function switchTab(tabName) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    
     const viewEl = document.getElementById('view-' + tabName);
     if (viewEl) viewEl.classList.add('active');
     
@@ -473,637 +422,505 @@
     if(!fixtures.length){el.innerHTML='<div class="no-fixtures-msg">No fixtures yet — add them in the Fixtures tab</div>';return;}
     el.innerHTML=fixtures.map(fx=>{
       const isActive=fx.id===activeFixtureId;
-      let statusBadge = '';
-      if(fx.finished) statusBadge = '<span class="fp-badge ft">FT</span>';
-      else if(fx.running) statusBadge = '<span class="fp-badge live">LIVE</span>';
-      
-      return `
-        <div class="fixture-pick-row ${isActive?'active-fx':''}" onclick="selectFixtureToScore('${fx.id}')">
-          <div class="fp-left-content">
-            ${getLogoHtml(fx.logo1)}
-            <div>
-              <div class="fp-teams">${fx.team1} vs ${fx.team2}</div>
-              <div class="fp-meta">${fx.date || ''} ${fx.time || ''} ${fx.venue ? '• '+fx.venue : ''}</div>
-            </div>
-          </div>
-          <div class="fp-right">
-            <div class="fp-score">${fx.score1 || 0} - ${fx.score2 || 0}</div>
-            ${statusBadge}
-          </div>
-        </div>
-      `;
+      const meta=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min match':null, fx.venue].filter(Boolean).join(' · ');
+      const badge=fx.finished?'<span class="fp-badge ft">FT</span>':fx.running?'<span class="fp-badge live">Live</span>':'';
+      return '<div class="fixture-pick-row'+(isActive?' active-fx':'')+' "onclick="loadFixture('+fx.id+')">'
+        +'<div class="fp-left-content">'+getLogoHtml(fx.logo1)+'<div><div class="fp-teams">'+fx.team1+' vs '+fx.team2+'</div>'+(meta?'<div class="fp-meta">'+meta+'</div>':'')+'</div></div>'
+        +'<div class="fp-right">'+badge+'<span class="fp-score">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span></div>'
+        +'</div>';
     }).join('');
   }
 
-  function selectFixtureToScore(id) {
-    activeFixtureId = id;
-    renderScorerPickList();
-    renderActiveScorerArea();
-  }
-
-  function renderActiveScorerArea() {
-    const container = document.getElementById('scorer-active-area');
-    const fx = getActiveFx();
-    if(!fx) {
-      container.innerHTML = `<div class="no-fixture-selected"><span>⬆️</span>Select a fixture above to start scoring</div>`;
-      return;
-    }
-
-    let squadOptions1 = (fx.squad1 || "").split(',').map(p=>p.trim()).filter(p=>p.length > 0);
-    let squadOptions2 = (fx.squad2 || "").split(',').map(p=>p.trim()).filter(p=>p.length > 0);
-
-    let dropdownHtml1 = `<option value="">-- Select Scorer (Optional) --</option>` + squadOptions1.map(p=>`<option value="${p}">${p}</option>`).join('');
-    let dropdownHtml2 = `<option value="">-- Select Scorer (Optional) --</option>` + squadOptions2.map(p=>`<option value="${p}">${p}</option>`).join('');
-
-    let startBtnText = "▶️ Start Match";
-    let startBtnClick = "startTimer()";
-    if (fx.running) {
-      startBtnText = "⏸️ Pause Match";
-      startBtnClick = "pauseTimer()";
-    } else if (fx.seconds > 0) {
-      startBtnText = "▶️ Resume Match";
-    }
-
-    container.innerHTML = `
-      <div class="match-header" style="margin-top:15px;">
-        <div class="match-title">${fx.competition || 'Rugby Union Match'} ${fx.venue ? '• ' + fx.venue : ''}</div>
-        <div class="timer-display" id="scorer-timer-string">${fxTime(fx)}</div>
-        <div class="half-label" id="scorer-half-string">${fx.finished ? '💥 Full Time' : (fx.half === 1 ? '1st Half' : '2nd Half')}</div>
-        <div class="duration-info">Match Clock: <span id="scorer-real-clock">${fxRealTime(fx)}</span> / ${fx.halfDuration || 40}:00 per half</div>
+  function renderScorerActive(){
+    const area=document.getElementById('scorer-active-area');
+    const fx=getActiveFx();
+    if(!fx){area.innerHTML='<div class="no-fixture-selected"><span>⬆️</span>Select a fixture above to start scoring</div>';return;}
+    const t=fxTime(fx);
+    const halfLabel=fx.finished?'Match Ended':(fx.half===1?'1st Half':'2nd Half');
+    const htDisplay=fx.halfTime?'block':'none';
+    const durInfo=fx.halfDuration?fx.halfDuration*2+' min match ('+fx.halfDuration+' min halves)':'';
+    area.innerHTML=`
+      <div class="match-header">
+        <div class="match-title">${fx.comp||'Rugby Union'}</div>
+        <div class="timer-display" id="timer">${t}</div>
+        <div class="half-label" id="half-label">${halfLabel}</div>
+        ${durInfo?'<div class="duration-info">'+durInfo+'</div>':''}
       </div>
-
-      <div class="halftime-banner" id="scorer-halftime-banner" style="display: ${fx.halftime && !fx.finished ? 'block' : 'none'}">⏸️ Half-Time Interval</div>
-
+      <div class="halftime-banner" id="halftime-banner" style="display:${htDisplay}">Half Time — Start clock to transition to 2nd Half</div>
       <div class="score-grid">
         <div class="team-card">
-          ${getLogoHtml(fx.logo1, "team-logo-lg")}
+          ${getLogoHtml(fx.logo1, 'team-logo-lg')}
           <div class="team-name-static">${fx.team1}</div>
-          <div class="score-display">${fx.score1 || 0}</div>
-          
+          <div class="score-display" id="score1">${fx.score1||0}</div>
           <div class="score-btns">
-            <button class="score-btn" onclick="stagePoints(1, 5)">+5<span class="pts">Try</span></button>
-            <button class="score-btn" onclick="stagePoints(1, 2)">+2<span class="pts">Conv</span></button>
-            <button class="score-btn" onclick="stagePoints(1, 3)">+3<span class="pts">Pen</span></button>
-            <button class="score-btn" onclick="stagePoints(1, 3)">+3<span class="pts">Drop</span></button>
+            <button class="score-btn" onclick="addScore(1,5)"><span class="pts">5</span>Try</button>
+            <button class="score-btn" onclick="addScore(1,2)"><span class="pts">2</span>Conv.</button>
+            <button class="score-btn" onclick="addScore(1,3)"><span class="pts">3</span>Penalty</button>
+            <button class="score-btn" onclick="addScore(1,1)"><span class="pts">3</span>Drop Goal</button>
           </div>
-          
-          <div class="player-assign-box" id="assign-box-team1">
-            <div class="player-assign-label">Assign points to:</div>
-            <select class="player-select" id="player-select-team1" onchange="confirmStagedPoints(1)">
-              ${dropdownHtml1}
-            </select>
-          </div>
-
-          <div class="kick-box" id="kick-box-team1">
-            <div class="kick-label">Conversion Kick</div>
-            <div class="kick-btn-grid">
-              <button class="kick-outcome-btn success" onclick="handleKickOutcome(1, true)">Good</button>
-              <button class="kick-outcome-btn miss" onclick="handleKickOutcome(1, false)">Miss</button>
-            </div>
-          </div>
-
-          <button class="minus-btn" onclick="removeLastEvent(1)" title="Remove last logged score for Home">↺ Undo Score</button>
+          <button class="minus-btn" onclick="addScore(1,-1)">−</button>
         </div>
-
         <div class="vs-col"><div class="vs-text">VS</div></div>
-
         <div class="team-card">
-          ${getLogoHtml(fx.logo2, "team-logo-lg")}
+          ${getLogoHtml(fx.logo2, 'team-logo-lg')}
           <div class="team-name-static">${fx.team2}</div>
-          <div class="score-display">${fx.score2 || 0}</div>
-          
+          <div class="score-display" id="score2">${fx.score2||0}</div>
           <div class="score-btns">
-            <button class="score-btn" onclick="stagePoints(2, 5)">+5<span class="pts">Try</span></button>
-            <button class="score-btn" onclick="stagePoints(2, 2)">+2<span class="pts">Conv</span></button>
-            <button class="score-btn" onclick="stagePoints(2, 3)">+3<span class="pts">Pen</span></button>
-            <button class="score-btn" onclick="stagePoints(2, 3)">+3<span class="pts">Drop</span></button>
+            <button class="score-btn" onclick="addScore(2,5)"><span class="pts">5</span>Try</button>
+            <button class="score-btn" onclick="addScore(2,2)"><span class="pts">2</span>Conv.</button>
+            <button class="score-btn" onclick="addScore(2,3)"><span class="pts">3</span>Penalty</button>
+            <button class="score-btn" onclick="addScore(2,1)"><span class="pts">3</span>Drop Goal</button>
           </div>
-
-          <div class="player-assign-box" id="assign-box-team2">
-            <div class="player-assign-label">Assign points to:</div>
-            <select class="player-select" id="player-select-team2" onchange="confirmStagedPoints(2)">
-              ${dropdownHtml2}
-            </select>
-          </div>
-
-          <div class="kick-box" id="kick-box-team2">
-            <div class="kick-label">Conversion Kick</div>
-            <div class="kick-btn-grid">
-              <button class="kick-outcome-btn success" onclick="handleKickOutcome(2, true)">Good</button>
-              <button class="kick-outcome-btn miss" onclick="handleKickOutcome(2, false)">Miss</button>
-            </div>
-          </div>
-
-          <button class="minus-btn" onclick="removeLastEvent(2)" title="Remove last logged score for Away">↺ Undo Score</button>
+          <button class="minus-btn" onclick="addScore(2,-1)">−</button>
         </div>
       </div>
-
       <div class="ctrl-row">
-        ${!fx.finished ? `<button class="ctrl-btn primary" onclick="${startBtnClick}">${startBtnText}</button>` : ''}
-        ${fx.half === 1 && !fx.halftime && !fx.finished ? `<button class="ctrl-btn warning" onclick="triggerHalftime()">⏸️ End 1st Half</button>` : ''}
-        ${fx.halftime && fx.half === 1 && !fx.finished ? `<button class="ctrl-btn primary" onclick="startSecondHalf()">▶️ Start 2nd Half</button>` : ''}
-        ${fx.half === 2 && !fx.finished ? `<button class="ctrl-btn danger" onclick="endMatch()">🏁 End Match</button>` : ''}
-        ${fx.finished ? `<button class="ctrl-btn warning" onclick="resetMatchToLive()">🔄 Reopen Match Data</button>` : ''}
+        <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()">▶️ Start</button>
+        <button class="ctrl-btn warning" onclick="endHalfManually()">⏳ End Half</button>
+        <button class="ctrl-btn danger" onclick="endGameManually()">🏁 End Game</button>
+        <button class="ctrl-btn" onclick="resetTimer()">🔄 Reset Timer</button>
+        <button class="ctrl-btn" style="color:var(--color-danger);" onclick="confirmReset()">⚠️ Reset Match</button>
       </div>
-
       <div class="events-section">
-        <div class="section-label">Live Log Events</div>
-        <div class="events-list" id="scorer-events-list">
-          <div class="no-events">No metrics registered yet</div>
-        </div>
-      </div>
-    `;
-    renderScorerEvents();
+        <div class="section-label">📋 Match Events</div>
+        <div class="events-list" id="events-list"></div>
+      </div>`;
+    renderEvents();
+    updateStartBtn(fx);
   }
 
-  function stagePoints(teamNum, points) {
-    if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx) return;
-
-    stagedScore = { teamNum, points };
-
-    document.getElementById('assign-box-team1').style.display = 'none';
-    document.getElementById('assign-box-team2').style.display = 'none';
-    document.getElementById('kick-box-team1').style.display = 'none';
-    document.getElementById('kick-box-team2').style.display = 'none';
-
-    const assignBox = document.getElementById(`assign-box-team${teamNum}`);
-    const selectEl = document.getElementById(`player-select-team${teamNum}`);
-    
-    if(assignBox && selectEl) {
-      selectEl.value = ""; 
-      assignBox.style.display = 'flex';
-    }
-  }
-
-  function confirmStagedPoints(teamNum) {
-    if(!stagedScore) return;
-    const selectEl = document.getElementById(`player-select-team${teamNum}`);
-    const player = selectEl ? selectEl.value : "";
-
-    adjustScore(stagedScore.teamNum, stagedScore.points, player);
-    
-    const assignedBox = document.getElementById(`assign-box-team${teamNum}`);
-    if(assignedBox) assignedBox.style.display = 'none';
-  }
-
-  function handleKickOutcome(teamNum, isSuccess) {
-    document.getElementById(`kick-box-team${teamNum}`).style.display = 'none';
-    if(isSuccess) {
-      stagePoints(teamNum, 2);
+  function updateStartBtn(fx){
+    const btn=document.getElementById('start-btn');
+    if(!btn || !fx) return;
+    if(fx.running){
+      btn.innerHTML='⏸️ Pause';
+      btn.className='ctrl-btn';
     } else {
-      stagedScore = null;
+      btn.innerHTML='▶️ Start';
+      btn.className='ctrl-btn primary';
     }
   }
 
-  function adjustScore(teamNum, points, player="") {
-    const fx = getActiveFx();
-    if(!fx) return;
-
-    let s1 = fx.score1 || 0;
-    let s2 = fx.score2 || 0;
-    if(teamNum === 1) s1 = Math.max(0, s1 + points);
-    if(teamNum === 2) s2 = Math.max(0, s2 + points);
-
-    let eventTime = fxRealTime(fx);
-    let newEvent = {
-      id: 'ev_' + Date.now(),
-      teamNum,
-      points,
-      type: scoreTypeMap[points] || 'Points',
-      player: player || 'Unassigned',
-      time: eventTime
-    };
-
-    let events = fx.events ? Object.values(fx.events) : [];
-    events.push(newEvent);
-
-    db.ref('fixtures/' + fx.id).update({
-      score1: s1,
-      score2: s2,
-      events: events
-    }).then(() => {
-      if(points === 5) {
-        document.getElementById(`kick-box-team${teamNum}`).style.display = 'flex';
-      } else {
-        stagedScore = null;
-      }
-    });
-  }
-
-  function removeLastEvent(teamNum) {
-    if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx || !fx.events) return;
-
-    let events = Object.values(fx.events);
-    let teamEvents = events.filter(e => e.teamNum === teamNum);
-    if(!teamEvents.length) {
-      alert("No events to remove for this team.");
-      return;
-    }
-
-    let lastEvent = teamEvents[teamEvents.length - 1];
-    let filteredEvents = events.filter(e => e.id !== lastEvent.id);
-
-    let s1 = fx.score1 || 0;
-    let s2 = fx.score2 || 0;
-    if(teamNum === 1) s1 = Math.max(0, s1 - lastEvent.points);
-    if(teamNum === 2) s2 = Math.max(0, s2 - lastEvent.points);
-
-    db.ref('fixtures/' + fx.id).update({
-      score1: s1,
-      score2: s2,
-      events: filteredEvents
-    });
-  }
-
-  function renderScorerEvents() {
-    const el = document.getElementById('scorer-events-list');
-    const fx = getActiveFx();
-    if(!el || !fx) return;
-    if(!fx.events || Object.keys(fx.events).length === 0) {
-      el.innerHTML = '<div class="no-events">No metrics registered yet</div>';
-      return;
-    }
-    let arr = Object.values(fx.events).reverse();
-    el.innerHTML = arr.map(ev => {
-      let side = ev.teamNum === 1 ? 'Home' : 'Away';
-      let tName = ev.teamNum === 1 ? fx.team1 : fx.team2;
-      return `
-        <div class="event-item">
-          <div>
-            <span class="event-type">[${side}] ${ev.type} (+${ev.points})</span> — 
-            <span>${ev.player}</span> 
-            <span style="font-size:11px; color:var(--color-text3)">(${tName})</span>
-          </div>
-          <div style="font-family:var(--font-mono); font-size:12px;">${ev.time}</div>
-        </div>
-      `;
+  function renderEvents(){
+    const el=document.getElementById('events-list'); if(!el) return;
+    const fx=getActiveFx(); const evts=fx?fx.events||[]:[];
+    if(!evts.length){el.innerHTML='<div class="no-events">No events yet — start scoring!</div>';return;}
+    el.innerHTML=evts.slice().reverse().map(e=> {
+      return '<div class="event-item"><span><span class="event-type">'+e.team+'</span> — '+e.type+'</span>'+(e.time?'<span>'+e.time+'</span>':'')+'</div>'
     }).join('');
   }
 
-  function startTimer() {
-    if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx || fx.running) return;
+  function loadFixture(id){
+    activeFixtureId=id;
+    renderScorerPickList();renderScorerActive();
+  }
 
+  if(!interval){
+    interval = setInterval(() => {
+      fixtures.forEach(fx => {
+        if(fx.id === activeFixtureId) {
+          const timerEl = document.getElementById('timer');
+          if(timerEl) timerEl.textContent = fxTime(fx);
+        }
+        if(fx.id === specViewingId) {
+          const specTimerEl = document.getElementById('spec-timer');
+          if(specTimerEl) specTimerEl.textContent = fxTime(fx);
+        }
+      });
+    }, 500);
+  }
+
+  function toggleTimer(){
+    if(!checkAdminAccess()) return;
+    const fx=getActiveFx();if(!fx||fx.finished)return;
+    let isRunning = !fx.running;
+    if(!fx.events) fx.events = [];
+
+    if(isRunning) {
+      if(fx.half === 1 && (!fx.seconds || fx.seconds === 0)) {
+         fx.events.push({team:'Match', type:'Match started (1st Half)', time:'00:00'});
+      }
+      if(fx.halfTime && fx.half === 1) {
+        fx.half = 2;
+        fx.halfTime = false;
+        fx.events.push({team:'Match', type:'2nd Half started', time: fxTime(fx)});
+      }
+      fx.timerStartTime = Date.now() + serverTimeOffset;
+    } else {
+      if (fx.timerStartTime) {
+        let currentServerTime = Date.now() + serverTimeOffset;
+        let delta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
+        fx.seconds = (fx.seconds || 0) + delta;
+      }
+      fx.timerStartTime = null;
+    }
+    
     db.ref('fixtures/' + fx.id).update({
-      running: true,
-      halftime: false,
-      timerStartTime: Date.now() + serverTimeOffset
+      running: isRunning,
+      half: fx.half,
+      halfTime: fx.halfTime,
+      seconds: fx.seconds || 0,
+      timerStartTime: fx.timerStartTime,
+      events: fx.events
     });
   }
 
-  function pauseTimer() {
+  function endHalfManually(){
     if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx || !fx.running) return;
+    const fx=getActiveFx();if(!fx||fx.finished)return;
+    
+    // Explicit condition check to change confirmation text based on the active half
+    const currentHalfName = fx.half === 1 ? 'Half Time' : 'Full Time';
+    if(!confirm(`Are you sure you want to trigger ${currentHalfName} now?`)) return;
 
-    let currentServerTime = Date.now() + serverTimeOffset;
-    let delta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
-    let totalSecs = (fx.seconds || 0) + delta;
+    if(!fx.events) fx.events = [];
+    
+    if(fx.running && fx.timerStartTime) {
+      let currentServerTime = Date.now() + serverTimeOffset;
+      let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
+      fx.seconds = (fx.seconds || 0) + realTimeDelta;
+    }
+    fx.timerStartTime = null;
+    fx.running = false;
 
-    db.ref('fixtures/' + fx.id).update({
-      running: false,
-      seconds: totalSecs,
-      timerStartTime: null
+    let timeStampStr = fxTime(fx);
+
+    if(fx.half === 1){
+      fx.halfTime = true;
+      fx.events.push({team:'Match', type:'Half time called', time: timeStampStr});
+    } else {
+      fx.finished = true;
+      fx.events.push({team:'Match', type:'Full time called', time: timeStampStr});
+    }
+    db.ref('fixtures/' + fx.id).update(fx);
+  }
+
+  function endGameManually(){
+    if(!checkAdminAccess()) return;
+    const fx=getActiveFx();if(!fx||fx.finished)return;
+    if(!confirm('Are you sure you want to declare Full Time for this game?'))return;
+    
+    if(fx.running && fx.timerStartTime) {
+      let currentServerTime = Date.now() + serverTimeOffset;
+      let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
+      fx.seconds = (fx.seconds || 0) + realTimeDelta;
+    }
+    fx.timerStartTime = null;
+    fx.running = false;
+    fx.finished = true;
+    fx.halfTime = false;
+    
+    let timeStampStr = fxTime(fx);
+    if(!fx.events) fx.events=[];
+    fx.events.push({team:'Match', type:'Full time!', time: timeStampStr});
+    db.ref('fixtures/' + fx.id).update(fx);
+  }
+
+  function resetTimer(){
+    if(!checkAdminAccess()) return;
+    const fx=getActiveFx();if(!fx)return;
+    fx.half=1;
+    fx.seconds=0;
+    fx.halfTime=false;
+    fx.running=false;
+    fx.finished=false;
+    fx.timerStartTime = null;
+    db.ref('fixtures/' + fx.id).update(fx);
+  }
+
+  function confirmReset(){
+    if(!checkAdminAccess()) return;
+    const fx=getActiveFx();if(!fx)return;
+    if(!confirm('Reset all scores, timer and events for this match?'))return;
+    fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;fx.timerStartTime=null;
+    db.ref('fixtures/' + fx.id).update(fx);
+  }
+
+  function addScore(team, pts){
+    if(!checkAdminAccess()) return;
+    const fx=getActiveFx();if(!fx||fx.finished)return;
+    
+    let finalPoints = pts;
+    if(pts === 1) finalPoints = 3; 
+
+    if(team===1){
+      if(pts===-1) fx.score1=Math.max(0,fx.score1-1);
+      else fx.score1=(fx.score1||0)+finalPoints;
+    }else{
+      if(pts===-1) fx.score2=Math.max(0,fx.score2-1);
+      else fx.score2=(fx.score2||0)+finalPoints;
+    }
+    
+    let typeText = scoreTypeMap[String(pts)];
+    if(pts !== -1) typeText += ` (+${finalPoints})`;
+
+    if(!fx.events) fx.events=[];
+    fx.events.push({
+      team: team===1?fx.team1:fx.team2,
+      type: typeText,
+      time: fxTime(fx)
     });
+    db.ref('fixtures/' + fx.id).update(fx);
   }
 
-  function triggerHalftime() {
-    if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx) return;
-
-    let halfSecs = (fx.halfDuration || 40) * 60;
-    db.ref('fixtures/' + fx.id).update({
-      running: false,
-      halftime: true,
-      half: 1,
-      seconds: halfSecs,
-      timerStartTime: null
-    });
+  function renderFixtureList(){
+    const el=document.getElementById('fixture-list');
+    if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures yet</div>';return;}
+    el.innerHTML=fixtures.map(fx=>{
+      const isActive=fx.id===activeFixtureId;
+      const detail=[fx.time?'KO: '+fx.time:null, fx.date, fx.halfDuration?fx.halfDuration*2+'min':null, fx.venue, fx.comp].filter(Boolean).join(' · ');
+      const badge=fx.finished?'<span class="fx-badge ft">FT</span>':fx.running?'<span class="fx-badge live">Live</span>':'';
+      return '<div class="fixture-row'+(isActive?' active-fixture':'')+' ">'
+        +'<div class="fixture-left-content">'+getLogoHtml(fx.logo1)+'<div><div class="fixture-teams">'+fx.team1+' vs '+fx.team2
+        +' <span style="font-family:var(--font-mono);font-size:13px;color:var(--color-text2)">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span></div>'
+        +(detail?'<div class="fixture-detail">'+detail+'</div>':'')+'</div></div>'
+        +'<div class="fixture-actions">'+badge
+        +'<button class="fx-action-btn" onclick="openEditPanel('+fx.id+')" title="Edit">✏️</button>'
+        +'<button class="fx-action-btn del" onclick="deleteFixture('+fx.id+')" title="Delete">🗑️</button>'
+        +'</div></div>';
+    }).join('');
   }
 
-  function startSecondHalf() {
-    if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx) return;
+  function openEditPanel(id) {
+     if(!checkAdminAccess()) return;
+     const fx = fixtures.find(f => f.id === id);
+     if(!fx) return;
 
-    let halfSecs = (fx.halfDuration || 40) * 60;
-    db.ref('fixtures/' + fx.id).update({
-      running: true,
-      halftime: false,
-      half: 2,
-      seconds: halfSecs,
-      timerStartTime: Date.now() + serverTimeOffset
-    });
-  }
+     document.getElementById('create-fixture-panel').style.display = 'none';
+     const panel = document.getElementById('edit-fixture-panel');
+     panel.style.display = 'block';
 
-  function endMatch() {
-    if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx) return;
+     document.getElementById('edit-fx-id').value = fx.id;
+     document.getElementById('edit-fx-team1').value = fx.team1 || '';
+     document.getElementById('edit-fx-team2').value = fx.team2 || '';
+     document.getElementById('edit-fx-logo1').value = fx.logo1 || '';
+     document.getElementById('edit-fx-logo2').value = fx.logo2 || '';
+     document.getElementById('edit-fx-date').value = fx.date || '';
+     document.getElementById('edit-fx-time').value = fx.time || '15:00';
+     document.getElementById('edit-fx-duration').value = fx.halfDuration || 40;
+     document.getElementById('edit-fx-venue').value = fx.venue || '';
+     document.getElementById('edit-fx-comp').value = fx.comp || '';
 
-    let halfSecs = (fx.halfDuration || 40) * 60;
-    db.ref('fixtures/' + fx.id).update({
-      running: false,
-      halftime: false,
-      finished: true,
-      seconds: halfSecs * 2,
-      timerStartTime: null
-    });
-  }
-
-  function resetMatchToLive() {
-    if(!checkAdminAccess()) return;
-    const fx = getActiveFx();
-    if(!fx) return;
-    if(!confirm("Reopen match metrics? This reverts full-time statuses and restarts clock mechanics.")) return;
-
-    db.ref('fixtures/' + fx.id).update({
-      finished: false,
-      running: false,
-      halftime: false,
-      half: 1,
-      seconds: 0,
-      timerStartTime: null
-    });
-  }
-
-  function addFixture() {
-    if(!checkAdminAccess()) return;
-    const t1 = document.getElementById('fx-team1').value.trim();
-    const t2 = document.getElementById('fx-team2').value.trim();
-    if(!t1 || !t2) { alert("Please provide both Home and Away team designations."); return; }
-
-    const newId = 'fx_' + Date.now();
-    const payload = {
-      id: newId,
-      team1: t1,
-      team2: t2,
-      logo1: document.getElementById('fx-logo1').value.trim(),
-      logo2: document.getElementById('fx-logo2').value.trim(),
-      squad1: document.getElementById('fx-squad1').value.trim(),
-      squad2: document.getElementById('fx-squad2').value.trim(),
-      date: document.getElementById('fx-date').value,
-      time: document.getElementById('fx-time').value,
-      halfDuration: parseInt(document.getElementById('fx-duration').value) || 40,
-      venue: document.getElementById('fx-venue').value.trim(),
-      competition: document.getElementById('fx-comp').value.trim(),
-      score1: 0,
-      score2: 0,
-      half: 1,
-      seconds: 0,
-      running: false,
-      halftime: false,
-      finished: false
-    };
-
-    db.ref('fixtures/' + newId).set(payload).then(() => {
-      document.getElementById('fx-team1').value = '';
-      document.getElementById('fx-team2').value = '';
-      document.getElementById('fx-logo1').value = '';
-      document.getElementById('fx-logo2').value = '';
-      document.getElementById('fx-squad1').value = '';
-      document.getElementById('fx-squad2').value = '';
-      document.getElementById('fx-venue').value = '';
-      document.getElementById('fx-comp').value = '';
-    });
-  }
-
-  function deleteFixture(id) {
-    if(!checkAdminAccess()) return;
-    if(!confirm("Permanently erase this scheduled fixture block?")) return;
-    if(activeFixtureId === id) activeFixtureId = null;
-    if(specViewingId === id) specViewingId = null;
-    db.ref('fixtures/' + id).remove();
-  }
-
-  function openEditFixture(id) {
-    if(!checkAdminAccess()) return;
-    const fx = fixtures.find(f => f.id === id);
-    if(!fx) return;
-
-    document.getElementById('edit-fx-id').value = fx.id;
-    document.getElementById('edit-fx-team1').value = fx.team1 || '';
-    document.getElementById('edit-fx-team2').value = fx.team2 || '';
-    document.getElementById('edit-fx-logo1').value = fx.logo1 || '';
-    document.getElementById('edit-fx-logo2').value = fx.logo2 || '';
-    document.getElementById('edit-fx-squad1').value = fx.squad1 || '';
-    document.getElementById('edit-fx-squad2').value = fx.squad2 || '';
-    document.getElementById('edit-fx-date').value = fx.date || '';
-    document.getElementById('edit-fx-time').value = fx.time || '';
-    document.getElementById('edit-fx-duration').value = fx.halfDuration || 40;
-    document.getElementById('edit-fx-venue').value = fx.venue || '';
-    document.getElementById('edit-fx-comp').value = fx.competition || '';
-
-    document.getElementById('create-fixture-panel').style.display = 'none';
-    document.getElementById('edit-fixture-panel').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+     panel.scrollIntoView({ behavior: 'smooth' });
   }
 
   function closeEditPanel() {
-    document.getElementById('edit-fixture-panel').style.display = 'none';
-    document.getElementById('create-fixture-panel').style.display = 'block';
+     document.getElementById('edit-fixture-panel').style.display = 'none';
+     document.getElementById('create-fixture-panel').style.display = 'block';
   }
 
   function saveFixtureEdits() {
-    const id = document.getElementById('edit-fx-id').value;
-    if(!id) return;
+     if(!checkAdminAccess()) return;
+     const id = document.getElementById('edit-fx-id').value;
+     if(!id) return;
 
-    const updates = {
-      team1: document.getElementById('edit-fx-team1').value.trim(),
-      team2: document.getElementById('edit-fx-team2').value.trim(),
-      logo1: document.getElementById('edit-fx-logo1').value.trim(),
-      logo2: document.getElementById('edit-fx-logo2').value.trim(),
-      squad1: document.getElementById('edit-fx-squad1').value.trim(),
-      squad2: document.getElementById('edit-fx-squad2').value.trim(),
-      date: document.getElementById('edit-fx-date').value,
-      time: document.getElementById('edit-fx-time').value,
-      halfDuration: parseInt(document.getElementById('edit-fx-duration').value) || 40,
-      venue: document.getElementById('edit-fx-venue').value.trim(),
-      competition: document.getElementById('edit-fx-comp').value.trim()
+     const t1 = document.getElementById('edit-fx-team1').value.trim();
+     const t2 = document.getElementById('edit-fx-team2').value.trim();
+     if(!t1 || !t2) { alert('Both team names are required.'); return; }
+
+     const dur = parseInt(document.getElementById('edit-fx-duration').value) || 40;
+
+     const updatePayload = {
+        team1: t1,
+        team2: t2,
+        logo1: document.getElementById('edit-fx-logo1').value.trim(),
+        logo2: document.getElementById('edit-fx-logo2').value.trim(),
+        date: document.getElementById('edit-fx-date').value || '',
+        time: document.getElementById('edit-fx-time').value || '15:00',
+        halfDuration: Math.min(99, Math.max(1, dur)),
+        venue: document.getElementById('edit-fx-venue').value.trim(),
+        comp: document.getElementById('edit-fx-comp').value.trim()
+     };
+
+     db.ref('fixtures/' + id).update(updatePayload, (error) => {
+        if(error) {
+           alert("Failed to save changes: " + error.message);
+        } else {
+           closeEditPanel();
+        }
+     });
+  }
+
+  function addFixture(){
+    if(!checkAdminAccess()) return;
+    const t1=document.getElementById('fx-team1').value.trim();
+    const t2=document.getElementById('fx-team2').value.trim();
+    if(!t1||!t2){alert('Please enter both team names.');return;}
+    const dur=parseInt(document.getElementById('fx-duration').value)||40;
+
+    const newId = Date.now();
+    const payload = {};
+    payload[newId] = {
+      id:newId,
+      team1:t1,
+      team2:t2,
+      logo1:document.getElementById('fx-logo1').value.trim(),
+      logo2:document.getElementById('fx-logo2').value.trim(),
+      date:document.getElementById('fx-date').value || '',
+      time:document.getElementById('fx-time').value || '15:00',
+      halfDuration:Math.min(99,Math.max(1,dur)),
+      venue:document.getElementById('fx-venue').value.trim(),
+      comp:document.getElementById('fx-comp').value.trim(),
+      score1:0,score2:0,seconds:0,half:1,events:[],running:false,finished:false,halfTime:false,timerStartTime:null
     };
 
-    db.ref('fixtures/' + id).update(updates).then(() => {
-      closeEditPanel();
-      if(activeFixtureId === id) renderActiveScorerArea();
+    db.ref('fixtures').update(payload, (error) => {
+      if(error) {
+         alert("Data saving error: " + error.message);
+      } else {
+         db.ref('fixtures').get().then((snap) => {
+            if(snap.exists()){
+               const fresh = snap.val();
+               const rawArr = Object.keys(fresh).map(k => fresh[k]);
+               fixtures = sortFixturesChronologically(rawArr);
+               renderFixtureList();
+               renderScorerPickList();
+               renderSpecFixtureList();
+            }
+         });
+      }
+    });
+
+    document.getElementById('fx-team1').value='';
+    document.getElementById('fx-team2').value='';
+    document.getElementById('fx-logo1').value='';
+    document.getElementById('fx-logo2').value='';
+    document.getElementById('fx-venue').value='';
+    document.getElementById('fx-comp').value='';
+    document.getElementById('fx-duration').value='40';
+  }
+
+  function deleteFixture(id){
+    if(!checkAdminAccess()) return;
+    if(!confirm('Are you sure you want to permanently delete this fixture?')) return;
+    if(activeFixtureId===id) activeFixtureId=null;
+    if(specViewingId===id){specViewingId=null;document.getElementById('spec-score-panel').style.display='none';document.getElementById('spec-fixture-select').style.display='block';}
+    db.ref('fixtures/' + id).remove();
+  }
+
+  function renderSpecFixtureList(){
+    const el=document.getElementById('spec-fixture-list');
+    if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures scheduled yet</div>';return;}
+    el.innerHTML=fixtures.map(fx=>{
+      const isSelected=fx.id===specViewingId;
+      const detail=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min':null, fx.venue].filter(Boolean).join(' · ');
+      const liveDot=fx.running?'<span class="live-dot"></span> ':'';
+      const score='<span style="font-family:var(--font-mono);font-size:14px;font-weight:700;">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span>';
+      const badge=fx.finished?'<span class="fx-badge ft" style="margin-right:4px">FT</span>':'';
+      return '<div class="spec-fixture-btn'+(isSelected?' selected':'')+' "onclick="specSelectFixture('+fx.id+')">'
+        +'<div class="spec-left-side">'+getLogoHtml(fx.logo1)+'<div><div class="spec-fx-teams">'+liveDot+fx.team1+' vs '+fx.team2+'</div>'+(detail?'<div class="spec-fx-detail">'+detail+'</div>':'')+'</div></div>'
+        +'<div style="display:flex;align-items:center;gap:6px;">'+badge+score+'</div></div>';
+    }).join('');
+  }
+
+  function specSelectFixture(id){
+    specViewingId=id;
+    renderSpecFixtureList();
+    renderSpecPanel();
+    document.getElementById('spec-fixture-select').style.display='none';
+    document.getElementById('spec-score-panel').style.display='block';
+  }
+
+  function specBack(){
+    specViewingId=null;
+    renderSpecFixtureList();
+    document.getElementById('spec-score-panel').style.display='none';
+    document.getElementById('spec-fixture-select').style.display='block';
+  }
+
+  function renderSpecPanel(){
+    const fx=fixtures.find(f=>f.id===specViewingId);if(!fx)return;
+    document.getElementById('spec-timer').textContent=fxTime(fx);
+    document.getElementById('spec-half').textContent=fx.finished?'Match Ended':(fx.half===1?'1st Half':'2nd Half');
+    document.getElementById('spec-score1').textContent=fx.score1||0;
+    document.getElementById('spec-score2').textContent=fx.score2||0;
+    document.getElementById('spec-name1').textContent=fx.team1;
+    document.getElementById('spec-name2').textContent=fx.team2;
+    document.getElementById('spec-match-label').textContent=fx.comp||'Rugby Match';
+    
+    document.getElementById('spec-img1-container').innerHTML = getLogoHtml(fx.logo1, 'team-logo-lg');
+    document.getElementById('spec-img2-container').innerHTML = getLogoHtml(fx.logo2, 'team-logo-lg');
+    document.getElementById('spec-halftime').style.display=fx.halfTime?'block':'none';
+    
+    const l1=document.getElementById('spec-lead1');
+    const l2=document.getElementById('spec-lead2');
+    l1.innerHTML='';l2.innerHTML='';
+    if(fx.score1>fx.score2)l1.innerHTML='<span class="leading-tag">Leading</span>';
+    else if(fx.score2>fx.score1)l2.innerHTML='<span class="leading-tag">Leading</span>';
+
+    const evEl=document.getElementById('spec-events-list');
+    const evts=fx.events||[];
+    if(!evts.length){evEl.innerHTML='<div class="spec-no-events">No events yet</div>';return;}
+    evEl.innerHTML=evts.slice().reverse().map(e=>{
+      return `
+      <div class="spec-event-row">
+        <div class="spec-event-main">
+           <span class="spec-event-team">${e.team}</span>
+           <span class="spec-event-type">${e.type}</span>
+        </div>
+        <span class="spec-event-time">${e.time}</span>
+      </div>
+    `}).join('');
+  }
+
+  function initRealtimeSync(){
+    db.ref('fixtures').on('value', (snapshot) => {
+      const data = snapshot.val();
+      if(data) {
+        const unsorted = Object.keys(data).map(key => data[key]);
+        fixtures = sortFixturesChronologically(unsorted);
+      } else {
+        fixtures = [];
+      }
+      
+      renderFixtureList();
+      renderScorerPickList();
+      renderSpecFixtureList();
+      
+      if(activeFixtureId) {
+        const currentFx = getActiveFx();
+        if(currentFx) {
+          const timerEl = document.getElementById('timer');
+          if(timerEl) timerEl.textContent = fxTime(currentFx);
+          const s1 = document.getElementById('score1');
+          if(s1) s1.textContent = currentFx.score1 || 0;
+          const s2 = document.getElementById('score2');
+          if(s2) s2.textContent = currentFx.score2 || 0;
+          const hl = document.getElementById('half-label');
+          if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : (currentFx.half === 2 ? '2nd Half' : ''));
+          const hb = document.getElementById('halftime-banner');
+          if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
+          
+          renderEvents();
+          updateStartBtn(currentFx);
+        } else {
+          activeFixtureId = null;
+          renderScorerActive();
+        }
+      }
+      if(specViewingId) renderSpecPanel();
     });
   }
 
-  function renderFixturesTabList() {
-    const el = document.getElementById('fixture-list');
-    if(!fixtures.length) { el.innerHTML = '<div class="empty-fixtures">No fixtures yet</div>'; return; }
-    
-    el.innerHTML = fixtures.map(fx => {
-      let badge = '';
-      if(fx.finished) badge = '<span class="fx-badge ft">FT</span>';
-      else if(fx.running) badge = '<span class="fx-badge live">LIVE</span>';
+  window.addEventListener('DOMContentLoaded', () => {
+    initRealtimeSync();
 
-      return `
-        <div class="fixture-row ${fx.id===activeFixtureId ? 'active-fixture':''}">
-          <div class="fixture-left-content">
-            ${getLogoHtml(fx.logo1)}
-            <div>
-              <div class="fixture-teams">${fx.team1} <span style="color:var(--color-text3); font-weight:normal;">vs</span> ${fx.team2} ${badge}</div>
-              <div class="fixture-detail">
-                ${fx.date||''} ${fx.time||''} ${fx.venue ? '• ' + fx.venue : ''} ${fx.competition ? '('+fx.competition+')' : ''}
-              </div>
-            </div>
-          </div>
-          <div class="fixture-actions">
-            <button class="fx-action-btn" onclick="openEditFixture('${fx.id}')" title="Edit Parameters">✏️</button>
-            <button class="fx-action-btn del" onclick="deleteFixture('${fx.id}')" title="Erase Record">🗑️</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function renderSpectatorTab() {
-    const selectionPanel = document.getElementById('spec-fixture-select');
-    const scorePanel = document.getElementById('spec-score-panel');
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role');
     
-    if(!specViewingId) {
-      selectionPanel.style.display = 'block';
-      scorePanel.style.display = 'none';
-      renderSpectatorSelectionList();
+    if (role === 'spectator') {
+      document.getElementById('app-tabs').style.display = 'none';
+      switchTab('spectator');
+      setTimeout(() => {
+        if(fixtures.length === 1){
+          specSelectFixture(fixtures[0].id);
+          document.getElementById('spec-back-button').style.display = 'none';
+        }
+      }, 1500);
     } else {
-      selectionPanel.style.display = 'none';
-      scorePanel.style.display = 'block';
-      renderSpectatorActivePanel();
+      renderScorerActive();
     }
-  }
-
-  function renderSpectatorSelectionList() {
-    const el = document.getElementById('spec-fixture-list');
-    if(!fixtures.length) { el.innerHTML = '<div class="empty-fixtures">No fixtures scheduled yet</div>'; return; }
-    
-    el.innerHTML = fixtures.map(fx => {
-      let status = '<span style="color:var(--color-text3)">Scheduled</span>';
-      if(fx.finished) status = '<span style="color:var(--color-success); font-weight:600;">Final Score (FT)</span>';
-      else if(fx.running) status = '<span style="color:var(--color-danger); font-weight:600;"><span class="live-dot"></span> LIVE</span>';
-      else if(fx.seconds > 0) status = '<span style="color:var(--color-warning); font-weight:600;">Paused</span>';
-
-      return `
-        <div class="spec-fixture-btn" onclick="specViewMatch('${fx.id}')">
-          <div class="spec-left-side">
-            ${getLogoHtml(fx.logo1)}
-            <div>
-              <div class="spec-fx-teams">${fx.team1} vs ${fx.team2}</div>
-              <div class="spec-fx-detail">${fx.date || ''} ${fx.time || ''} ${fx.venue ? '• ' + fx.venue : ''}</div>
-            </div>
-          </div>
-          <div style="text-align: right; font-family: var(--font-mono);">
-            <div style="font-size:16px; font-weight:700; color:var(--color-text);">${fx.score1 || 0} - ${fx.score2 || 0}</div>
-            <div style="font-size:11px; margin-top:2px;">${status}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function specViewMatch(id) {
-    specViewingId = id;
-    renderSpectatorTab();
-  }
-
-  function specBack() {
-    specViewingId = null;
-    renderSpectatorTab();
-  }
-
-  function renderSpectatorActivePanel() {
-    const fx = fixtures.find(f => f.id === specViewingId);
-    if(!fx) { specBack(); return; }
-
-    document.getElementById('spec-match-label').innerHTML = `${fx.running ? '<span class="live-dot"></span> ' : ''}${fx.competition || 'Rugby Union'} ${fx.venue ? '• ' + fx.venue : ''}`;
-    document.getElementById('spec-timer').innerText = fxTime(fx);
-    
-    let subLabel = "1st Half";
-    if(fx.finished) subLabel = "🏁 Full Time";
-    else if(fx.half === 2) subLabel = "2nd Half";
-    document.getElementById('spec-half').innerText = subLabel;
-
-    document.getElementById('spec-halftime').style.display = (fx.halftime && !fx.finished) ? 'block' : 'none';
-
-    document.getElementById('spec-name1').innerText = fx.team1;
-    document.getElementById('spec-score1').innerText = fx.score1 || 0;
-    document.getElementById('spec-name2').innerText = fx.team2;
-    document.getElementById('spec-score2').innerText = fx.score2 || 0;
-
-    document.getElementById('spec-img1-container').innerHTML = getLogoHtml(fx.logo1, "team-logo-lg");
-    document.getElementById('spec-img2-container').innerHTML = getLogoHtml(fx.logo2, "team-logo-lg");
-
-    let lead1 = document.getElementById('spec-lead1');
-    let lead2 = document.getElementById('spec-lead2');
-    lead1.innerHTML = ''; lead2.innerHTML = '';
-    
-    let s1 = fx.score1 || 0;
-    let s2 = fx.score2 || 0;
-    if(s1 > s2) lead1.innerHTML = '<span class="leading-tag">Leading</span>';
-    if(s2 > s1) lead2.innerHTML = '<span class="leading-tag">Leading</span>';
-
-    const evList = document.getElementById('spec-events-list');
-    if(!fx.events || Object.keys(fx.events).length === 0) {
-      evList.innerHTML = '<div class="spec-no-events">No events logged yet</div>';
-      return;
-    }
-
-    let arr = Object.values(fx.events).reverse();
-    evList.innerHTML = arr.map(ev => {
-      let tName = ev.teamNum === 1 ? fx.team1 : fx.team2;
-      return `
-        <div class="spec-event-row">
-          <div class="spec-event-main">
-            <span class="spec-event-team">${tName}</span>
-            <span class="spec-event-type">${ev.type} (+${ev.points}) — ${ev.player}</span>
-          </div>
-          <div class="spec-event-time">${ev.time}</div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  db.ref('fixtures').on('value', (snapshot) => {
-    const data = snapshot.val();
-    let rawArr = [];
-    if(data) {
-      for(let k in data) {
-        rawArr.push(data[k]);
-      }
-    }
-    
-    fixtures = sortFixturesChronologically(rawArr);
-
-    renderScorerPickList();
-    if(activeFixtureId) renderActiveScorerArea();
-    renderFixturesTabList();
-    renderSpectatorTab();
   });
-
-  interval = setInterval(() => {
-    const sStr = document.getElementById('scorer-timer-string');
-    const sClk = document.getElementById('scorer-real-clock');
-    const specT = document.getElementById('spec-timer');
-
-    if(activeFixtureId) {
-      const fx = getActiveFx();
-      if(fx) {
-        if(sStr) sStr.innerText = fxTime(fx);
-        if(sClk) sClk.innerText = fxRealTime(fx);
-      }
-    }
-    if(specViewingId) {
-      const fx = fixtures.find(f => f.id === specViewingId);
-      if(fx && specT) {
-        specT.innerText = fxTime(fx);
-      }
-    }
-  }, 1000);
 </script>
 </body>
 </html>
