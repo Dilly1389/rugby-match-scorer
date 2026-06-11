@@ -157,6 +157,15 @@
   .no-fixture-selected { text-align: center; padding: 2.5rem 1rem; color: var(--color-text2); font-size: 14px; }
   .no-fixture-selected span { font-size: 28px; display: block; margin-bottom: 10px; }
 
+  /* ROSTER DROPDOWN MODAL OVERLAY */
+  .roster-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+  .roster-modal { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); max-width: 400px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 15px; }
+  .roster-modal-title { font-size: 14px; font-weight: 700; color: var(--color-text); }
+  .roster-select { width: 100%; font-size: 14px; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--color-border2); background: var(--color-surface2); color: var(--color-text); outline: none; }
+  .roster-modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+  .roster-modal-btn { padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: var(--radius-sm); border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface2); color: var(--color-text); }
+  .roster-modal-btn.confirm { background: var(--color-info); color: white; border-color: var(--color-info); }
+
   /* FIXTURES TAB */
   .fixtures-wrap { padding: 1.25rem 1rem; }
   .add-fixture-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem; }
@@ -238,7 +247,7 @@
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
   .live-dot { inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; display: inline-block; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-  .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
+  .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
 
   ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--color-border2); border-radius: 4px; }
@@ -398,6 +407,17 @@
   </div>
 </div>
 
+<div class="roster-modal-overlay" id="roster-modal-element">
+  <div class="roster-modal">
+    <div class="roster-modal-title" id="roster-modal-heading">Assign Action to Player</div>
+    <select class="roster-select" id="roster-modal-dropdown"></select>
+    <div class="roster-modal-btns">
+      <button class="roster-modal-btn" onclick="closeRosterModal()">Cancel</button>
+      <button class="roster-modal-btn confirm" onclick="submitRosterSelection()">Confirm</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const firebaseConfig = {
     databaseURL: "https://rugby-scorer-50d3a-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -409,6 +429,9 @@
   let adminPin = localStorage.getItem('rugby_admin_pin') || '';
   let serverTimeOffset = 0;
   let collapsedGroups = {};
+
+  // Active tracking variable for dropdown selection flow
+  let pendingActionContext = null;
 
   db.ref(".info/serverTimeOffset").on("value", (snap) => {
     serverTimeOffset = snap.val() || 0;
@@ -751,18 +774,81 @@
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
+  // UPDATED METHOD TO LAUNCH POPUP DROPDOWN SELECTION IF ROSTER EXISTS
   function addScore(team, pts){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
     
-    let scorerName = "";
-    if(pts !== -1) {
-      scorerName = prompt("Enter Scorer Name or Jersey # (Leave blank if unknown):") || "";
-      scorerName = scorerName.trim();
+    if(pts === -1) {
+      executeScoreUpdate(team, pts, "");
+      return;
     }
 
+    const rosterString = team === 1 ? fx.squad1 : fx.squad2;
+    const rosterList = parseSquadString(rosterString);
+
+    if (rosterList.length > 0) {
+      // Launch custom modal dialog using our HTML element tree overlay
+      pendingActionContext = { isScoreMode: true, team: team, pts: pts, roster: rosterList };
+      const dropdown = document.getElementById('roster-modal-dropdown');
+      dropdown.innerHTML = '<option value="">-- Unknown / Unassigned --</option>' + 
+        rosterList.map(p => `<option value="#${p.num} ${p.name}">#${p.num} - ${p.name}</option>`).join('');
+      
+      const teamLabel = team === 1 ? fx.team1 : fx.team2;
+      const typeText = scoreTypeMap[String(pts)];
+      document.getElementById('roster-modal-heading').textContent = `Select ${teamLabel} player for ${typeText}:`;
+      document.getElementById('roster-modal-element').style.display = 'flex';
+    } else {
+      // Fallback behavior if squad string is absent on fixture payload
+      let scorerName = prompt("Enter Scorer Name or Jersey # (Leave blank if unknown):") || "";
+      executeScoreUpdate(team, pts, scorerName.trim());
+    }
+  }
+
+  function logMissedKick(team, kickType) {
+    if(!checkAdminAccess()) return;
+    const fx=getActiveFx();if(!fx||fx.finished)return;
+    
+    const rosterString = team === 1 ? fx.squad1 : fx.squad2;
+    const rosterList = parseSquadString(rosterString);
+
+    if (rosterList.length > 0) {
+      pendingActionContext = { isScoreMode: false, team: team, kickType: kickType, roster: rosterList };
+      const dropdown = document.getElementById('roster-modal-dropdown');
+      dropdown.innerHTML = '<option value="">-- Unknown / Unassigned --</option>' + 
+        rosterList.map(p => `<option value="#${p.num} ${p.name}">#${p.num} - ${p.name}</option>`).join('');
+      
+      const teamLabel = team === 1 ? fx.team1 : fx.team2;
+      document.getElementById('roster-modal-heading').textContent = `Select ${teamLabel} player who missed ${kickType}:`;
+      document.getElementById('roster-modal-element').style.display = 'flex';
+    } else {
+      let kickerName = prompt("Enter Kicker Name or Jersey # (Leave blank if unknown):") || "";
+      executeMissedKickUpdate(team, kickType, kickerName.trim());
+    }
+  }
+
+  function closeRosterModal() {
+    document.getElementById('roster-modal-element').style.display = 'none';
+    pendingActionContext = null;
+  }
+
+  function submitRosterSelection() {
+    if(!pendingActionContext) return;
+    const selectedPlayer = document.getElementById('roster-modal-dropdown').value;
+    
+    if(pendingActionContext.isScoreMode) {
+      executeScoreUpdate(pendingActionContext.team, pendingActionContext.pts, selectedPlayer);
+    } else {
+      executeMissedKickUpdate(pendingActionContext.team, pendingActionContext.kickType, selectedPlayer);
+    }
+    closeRosterModal();
+  }
+
+  function executeScoreUpdate(team, pts, scorerName) {
+    const fx=getActiveFx(); if(!fx) return;
     let finalPoints = pts;
     if(pts === 1) finalPoints = 3; 
+    
     if(team===1){
       if(pts===-1) fx.score1=Math.max(0,fx.score1-1);
       else fx.score1=(fx.score1||0)+finalPoints;
@@ -782,13 +868,8 @@
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
-  function logMissedKick(team, kickType) {
-    if(!checkAdminAccess()) return;
-    const fx=getActiveFx();if(!fx||fx.finished)return;
-    
-    let kickerName = prompt("Enter Kicker Name or Jersey # (Leave blank if unknown):") || "";
-    kickerName = kickerName.trim();
-    
+  function executeMissedKickUpdate(team, kickType, kickerName) {
+    const fx=getActiveFx(); if(!fx) return;
     let typeText = `Missed ${kickType}`;
     if(kickerName) typeText += ` by ${kickerName}`;
     
