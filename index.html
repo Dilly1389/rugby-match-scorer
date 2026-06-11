@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Laerskool Unika Rugby</title>
 <style>
-  /* DEFAULT LIGHT THEME (Matches light device setups) */
+  /* DEFAULT LIGHT THEME */
   :root {
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'SF Mono', 'Fira Code', monospace;
@@ -32,7 +32,7 @@
     --radius-sm: 6px;
   }
 
-  /* AUTOMATIC DARK THEME (Triggers if device is set to Dark Mode) */
+  /* AUTOMATIC DARK THEME */
   @media (prefers-color-scheme: dark) {
     :root {
       --color-bg: #0f1117;
@@ -68,7 +68,7 @@
   .tab:hover:not(.active) { color: var(--color-text); }
   .view { display: none; } .view.active { display: block; }
 
-  /* SHARED COLLAPSIBLE GROUPS (Fixtures & Spectator) */
+  /* SHARED COLLAPSIBLE GROUPS */
   .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 10px; }
   .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1.25rem; }
   
@@ -164,6 +164,8 @@
   .fixture-input { font-size: 14px; background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); outline: none; width: 100%; text-align: center; }
   .fixture-input:focus { border-color: var(--color-info); }
   .fixture-input::placeholder { color: var(--color-text3); }
+  .fixture-textarea { font-family: var(--font-sans); font-size: 13px; background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); outline: none; width: 100%; height: 75px; resize: vertical; }
+  .fixture-textarea:focus { border-color: var(--color-info); }
   .fixture-vs { font-size: 13px; font-weight: 600; color: var(--color-text3); text-align: center; }
   .fixture-meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .fixture-meta-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
@@ -217,6 +219,13 @@
   .spec-team-name { font-size: 14px; font-weight: 700; color: var(--color-text2); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; word-break: break-word; }
   .spec-score { font-size: 96px; font-weight: 700; font-family: var(--font-mono); color: var(--color-text); line-height: 1; }
   .spec-divider { width: 1px; background: var(--color-border); align-self: stretch; min-height: 140px; }
+  
+  /* SQUADS IN SPECTATOR VIEW */
+  .spec-squads-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 15px; }
+  .spec-squad-column { display: flex; flex-direction: column; gap: 4px; }
+  .spec-player-row { font-size: 13px; color: var(--color-text2); padding: 2px 0; border-bottom: 1px dashed var(--color-surface2); }
+  .spec-player-num { font-family: var(--font-mono); font-weight: 700; color: var(--color-info); margin-right: 6px; }
+
   .spec-events-box { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1.25rem; }
   .spec-event-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--color-border); }
   .spec-event-row:last-child { border-bottom: none; }
@@ -241,6 +250,7 @@
     .score-display { font-size: 48px; }
     .fixture-meta-grid { grid-template-columns: 1fr 1fr; }
     .fixture-meta-grid > :last-child { grid-column: span 2; }
+    .spec-squads-container { grid-template-columns: 1fr; }
   }
 </style>
 
@@ -279,6 +289,12 @@
           <div class="fixture-vs">vs</div>
           <input class="fixture-input" id="edit-fx-team2" placeholder="Away team" maxlength="40"/>
         </div>
+        
+        <div class="fixture-meta-grid-2">
+          <div class="input-group"><div class="input-label">Home Team List (e.g. 1, Name, 2, Name)</div><textarea class="fixture-textarea" id="edit-fx-squad1" placeholder="1, Player One, 2, Player Two..."></textarea></div>
+          <div class="input-group"><div class="input-label">Away Team List (e.g. 1, Name, 2, Name)</div><textarea class="fixture-textarea" id="edit-fx-squad2" placeholder="1, Player One, 2, Player Two..."></textarea></div>
+        </div>
+
         <div class="fixture-meta-grid-2">
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo1" placeholder="Image URL"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="edit-fx-logo2" placeholder="Image URL"/></div>
@@ -305,6 +321,12 @@
           <div class="fixture-vs">vs</div>
           <input class="fixture-input" id="fx-team2" placeholder="Away team" maxlength="40"/>
         </div>
+
+        <div class="fixture-meta-grid-2">
+          <div class="input-group"><div class="input-label">Home Team List (e.g. 1, Name, 2, Name)</div><textarea class="fixture-textarea" id="fx-squad1" placeholder="1, Player One, 2, Player Two..."></textarea></div>
+          <div class="input-group"><div class="input-label">Away Team List (e.g. 1, Name, 2, Name)</div><textarea class="fixture-textarea" id="fx-squad2" placeholder="1, Player One, 2, Player Two..."></textarea></div>
+        </div>
+
         <div class="fixture-meta-grid-2">
           <div class="input-group"><div class="input-label">Home Logo Link (URL)</div><input class="fixture-input" id="fx-logo1" placeholder="Optional image link"/></div>
           <div class="input-group"><div class="input-label">Away Logo Link (URL)</div><input class="fixture-input" id="fx-logo2" placeholder="Optional image link"/></div>
@@ -355,6 +377,18 @@
             <div id="spec-lead2"></div>
           </div>
         </div>
+
+        <div class="spec-squads-container">
+           <div class="spec-squad-column">
+              <div class="section-label" id="spec-squad-title1">Home Roster</div>
+              <div id="spec-squad-list1"></div>
+           </div>
+           <div class="spec-squad-column">
+              <div class="section-label" id="spec-squad-title2">Away Roster</div>
+              <div id="spec-squad-list2"></div>
+           </div>
+        </div>
+
         <div class="spec-events-box">
           <div class="section-label">Match events</div>
           <div id="spec-events-list"><div class="spec-no-events">No events yet</div></div>
@@ -430,6 +464,34 @@
       return `<img src="${url}" class="${className}" alt="Logo" onerror="this.style.display='none'"/>`;
     }
     return `<div class="${className === 'team-logo-lg' ? 'logo-placeholder-lg' : 'logo-placeholder'}">🛡️</div>`;
+  }
+
+  // HELPER TO CONVERT COMMA STRING INTO PRINTABLE SQUAD LISTS
+  function parseSquadString(str) {
+    if(!str) return [];
+    const elements = str.split(',').map(s => s.trim()).filter(Boolean);
+    const parsed = [];
+    for(let i=0; i<elements.length; i+=2) {
+       const num = elements[i] || '';
+       const name = elements[i+1] || '';
+       if(num || name) {
+          parsed.push({ num: num, name: name });
+       }
+    }
+    return parsed;
+  }
+
+  function renderSquadView(squadString, listContainerId) {
+     const container = document.getElementById(listContainerId);
+     if(!container) return;
+     const roster = parseSquadString(squadString);
+     if(roster.length === 0) {
+        container.innerHTML = '<div style="font-size:12px; color:var(--color-text3); font-style:italic;">No team list provided</div>';
+        return;
+     }
+     container.innerHTML = roster.map(p => {
+        return `<div class="spec-player-row"><span class="spec-player-num">${p.num}</span>${p.name}</div>`;
+     }).join('');
   }
 
   function switchTab(tabName) {
@@ -857,6 +919,8 @@
      document.getElementById('edit-fx-id').value = fx.id;
      document.getElementById('edit-fx-team1').value = fx.team1 || '';
      document.getElementById('edit-fx-team2').value = fx.team2 || '';
+     document.getElementById('edit-fx-squad1').value = fx.squad1 || '';
+     document.getElementById('edit-fx-squad2').value = fx.squad2 || '';
      document.getElementById('edit-fx-logo1').value = fx.logo1 || '';
      document.getElementById('edit-fx-logo2').value = fx.logo2 || '';
      document.getElementById('edit-fx-date').value = fx.date || '';
@@ -883,6 +947,8 @@
 
      const updatePayload = {
         team1: t1, team2: t2,
+        squad1: document.getElementById('edit-fx-squad1').value,
+        squad2: document.getElementById('edit-fx-squad2').value,
         logo1: document.getElementById('edit-fx-logo1').value.trim(),
         logo2: document.getElementById('edit-fx-logo2').value.trim(),
         date: document.getElementById('edit-fx-date').value || '',
@@ -908,6 +974,8 @@
     const payload = {};
     payload[newId] = {
       id:newId, team1:t1, team2:t2,
+      squad1:document.getElementById('fx-squad1').value,
+      squad2:document.getElementById('fx-squad2').value,
       logo1:document.getElementById('fx-logo1').value.trim(),
       logo2:document.getElementById('fx-logo2').value.trim(),
       date:document.getElementById('fx-date').value || '',
@@ -930,6 +998,7 @@
     });
 
     document.getElementById('fx-team1').value=''; document.getElementById('fx-team2').value='';
+    document.getElementById('fx-squad1').value=''; document.getElementById('fx-squad2').value='';
     document.getElementById('fx-logo1').value=''; document.getElementById('fx-logo2').value='';
     document.getElementById('fx-venue').value=''; document.getElementById('fx-comp').value='';
     document.getElementById('fx-duration').value='40';
@@ -976,6 +1045,12 @@
     const s1=fx.score1||0; const s2=fx.score2||0;
     document.getElementById('spec-lead1').innerHTML=(s1>s2)?'<span class="leading-tag">Leading</span>':'';
     document.getElementById('spec-lead2').innerHTML=(s2>s1)?'<span class="leading-tag">Leading</span>':'';
+
+    // RENDER SQUAD LABELS AND ROSTERS
+    document.getElementById('spec-squad-title1').textContent = fx.team1 + " Team List";
+    document.getElementById('spec-squad-title2').textContent = fx.team2 + " Team List";
+    renderSquadView(fx.squad1, 'spec-squad-list1');
+    renderSquadView(fx.squad2, 'spec-squad-list2');
 
     const evBox=document.getElementById('spec-events-list');
     const evts=fx.events||[];
