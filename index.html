@@ -68,10 +68,23 @@
   .tab:hover:not(.active) { color: var(--color-text); }
   .view { display: none; } .view.active { display: block; }
 
-  /* SHARED */
+  /* SHARED COLLAPSIBLE GROUPS (Fixtures & Spectator) */
   .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 10px; }
   .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1.25rem; }
   
+  .timeline-heading { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-info); margin: 20px 0 10px 0; border-bottom: 2px solid var(--color-border); padding-bottom: 4px; }
+  .timeline-heading.past { color: var(--color-text2); }
+  
+  .comp-group { margin-bottom: 8px; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; background: var(--color-surface); }
+  .comp-header { background: var(--color-surface2); padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; transition: background 0.15s; }
+  .comp-header:hover { background: var(--color-border2); }
+  .comp-header-title { display: flex; align-items: center; gap: 8px; }
+  .comp-count-badge { font-size: 11px; background: var(--color-border); color: var(--color-text2); padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+  .comp-chevron { font-size: 12px; color: var(--color-text3); transition: transform 0.2s ease; }
+  .comp-group.collapsed .comp-chevron { transform: rotate(-90deg); }
+  .comp-content { display: flex; flex-direction: column; gap: 1px; background: var(--color-border); }
+  .comp-group.collapsed .comp-content { display: none; }
+
   /* LOGOS */
   .team-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background: rgba(0,0,0,0.03); padding: 2px; }
   .team-logo-lg { width: 70px; height: 70px; object-fit: contain; margin-bottom: 8px; }
@@ -97,11 +110,13 @@
   .fp-badge.live { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid var(--color-danger-border); }
   .fp-badge.ft { background: var(--color-success-bg); color: var(--color-success); }
   .no-fixtures-msg { font-size: 13px; color: var(--color-text2); font-style: italic; }
+  
   .match-header { text-align: center; margin-bottom: 1.1rem; }
   .match-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 4px; }
   .timer-display { font-size: 52px; font-weight: 700; font-family: var(--font-mono); color: var(--color-text); line-height: 1; margin-bottom: 4px; }
   .half-label { font-size: 13px; color: var(--color-text2); }
   .duration-info { font-size: 12px; color: var(--color-text3); margin-top: 3px; }
+  
   .score-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: stretch; margin-bottom: 1.25rem; }
   .team-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
   .team-name-static { font-size: 15px; font-weight: 700; color: var(--color-text); width: 100%; word-break: break-word; }
@@ -126,6 +141,7 @@
   .ctrl-btn.warning:hover { background: rgba(230,162,60,0.15); }
   .ctrl-btn.danger { background: var(--color-danger-bg); color: var(--color-danger); border-color: var(--color-danger-border); }
   .ctrl-btn.danger:hover { background: rgba(245,108,108,0.15); }
+  
   .events-section { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-top: 15px; }
   .events-list { display: flex; flex-direction: column; gap: 5px; max-height: 180px; overflow-y: auto; }
   .event-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--color-text2); padding: 5px 0; border-bottom: 1px solid var(--color-border); }
@@ -136,21 +152,8 @@
   .no-fixture-selected { text-align: center; padding: 2.5rem 1rem; color: var(--color-text2); font-size: 14px; }
   .no-fixture-selected span { font-size: 28px; display: block; margin-bottom: 10px; }
 
-  /* FIXTURES TAB COLLAPSIBLE STYLES */
+  /* FIXTURES TAB */
   .fixtures-wrap { padding: 1.25rem 1rem; }
-  .timeline-heading { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-info); margin: 20px 0 10px 0; border-bottom: 2px solid var(--color-border); padding-bottom: 4px; }
-  .timeline-heading.past { color: var(--color-text2); }
-  
-  .comp-group { margin-bottom: 8px; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; background: var(--color-surface); }
-  .comp-header { background: var(--color-surface2); padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; transition: background 0.15s; }
-  .comp-header:hover { background: var(--color-border2); }
-  .comp-header-title { display: flex; align-items: center; gap: 8px; }
-  .comp-count-badge { font-size: 11px; background: var(--color-border); color: var(--color-text2); padding: 2px 6px; border-radius: 10px; font-weight: 700; }
-  .comp-chevron { font-size: 12px; color: var(--color-text3); transition: transform 0.2s ease; }
-  .comp-group.collapsed .comp-chevron { transform: rotate(-90deg); }
-  .comp-content { display: flex; flex-direction: column; gap: 1px; background: var(--color-border); transition: max-height 0.25s ease-out; }
-  .comp-group.collapsed .comp-content { display: none; }
-
   .add-fixture-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem; }
   .fixture-form { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
   .fixture-input { font-size: 14px; background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); outline: none; width: 100%; text-align: center; }
@@ -169,7 +172,7 @@
   .fixture-teams { font-size: 14px; font-weight: 600; color: var(--color-text); }
   .fixture-detail { font-size: 12px; color: var(--color-text2); margin-top: 3px; }
 
-  /* ACTION BUTTONS */
+  /* ACTIONS */
   .fixture-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
   .fx-action-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 4px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 32px; width: 34px; transition: all 0.12s ease; color: var(--color-text); }
   .fx-action-btn:hover { border-color: var(--color-info); background: var(--color-info-bg); }
@@ -188,15 +191,17 @@
 
   /* SPECTATOR */
   .spectator { padding: 1.5rem 1rem; }
-  .spec-fixture-list { display: flex; flex-direction: column; gap: 8px; margin-top: 2px; }
-  .spec-fixture-btn { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.15s; }
-  .spec-fixture-btn:hover { border-color: var(--color-info); }
-  .spec-fixture-btn.selected { border: 2px solid var(--color-info); background: var(--color-info-bg); }
+  .spec-fixture-list { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+  .spec-fixture-btn { background: var(--color-surface); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--color-surface2); transition: background 0.15s; }
+  .spec-fixture-btn:last-child { border-bottom: none; }
+  .spec-fixture-btn:hover { background: var(--color-surface2); }
+  .spec-fixture-btn.selected { background: var(--color-info-bg); }
   .spec-left-side { display: flex; align-items: center; gap: 12px; }
   .spec-fx-teams { font-size: 14px; font-weight: 600; color: var(--color-text); }
   .spec-fixture-btn.selected .spec-fx-teams { color: var(--color-info); }
   .spec-fx-detail { font-size: 12px; color: var(--color-text2); margin-top: 2px; }
   .spec-fixture-btn.selected .spec-fx-detail { color: var(--color-info); }
+  
   .spec-score-panel { display: none; }
   .spec-meta { text-align: center; margin-bottom: 1.5rem; }
   .spec-league { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -217,7 +222,7 @@
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
   .spec-half-time { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
-  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
+  .live-dot { inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; display: inline-block; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
@@ -249,8 +254,8 @@
   <div id="view-scorer" class="view active">
     <div class="board">
       <div class="fixture-picker">
-        <div class="fixture-picker-label">📅 Select fixture to score</div>
-        <div class="fixture-pick-list" id="scorer-pick-list"><div class="no-fixtures-msg">No fixtures yet — add them in the Fixtures tab</div></div>
+        <div class="fixture-picker-label">📅 Select upcoming fixture to score</div>
+        <div class="fixture-pick-list" id="scorer-pick-list"><div class="no-fixtures-msg">No upcoming fixtures scheduled</div></div>
       </div>
       <div id="scorer-active-area">
         <div class="no-fixture-selected"><span>⬆️</span>Select a fixture above to start scoring</div>
@@ -262,7 +267,7 @@
     <div class="fixtures-wrap">
       
       <div class="edit-modal" id="edit-fixture-panel">
-        <div class="section-label" style="margin-bottom:14px; color:var(--color-info); text-transform: uppercase;">✏️ Edit Fixture</div>
+        <div class="section-label" style="margin-bottom:14px; color:var(--color-info);">✏️ Edit Fixture</div>
         <input type="hidden" id="edit-fx-id"/>
         <div class="fixture-form">
           <input class="fixture-input" id="edit-fx-team1" placeholder="Home team" maxlength="40"/>
@@ -302,7 +307,7 @@
         <div class="fixture-meta-grid">
           <div class="input-group"><div class="input-label">Date</div><input class="fixture-input" id="fx-date" type="date"/></div>
           <div class="input-group"><div class="input-label">Kick-off</div><input class="fixture-input" id="fx-time" type="time" value="15:00"/></div>
-          <div class="input-group"><div class="input-label">Half duration (min)</div><input class="fixture-input" id="fx-duration" type="number" min="1" max="99" value="40" style="text-align:center;"/></div>
+          <div class="input-group"><div class="input-label">Half duration (min)</div><input class="fixture-input" id="fx-duration" type="number" min="1" max="99" value="40"/></div>
         </div>
         <div class="fixture-meta-grid-2">
           <div class="input-group"><div class="input-label">Venue</div><input class="fixture-input" id="fx-venue" placeholder="Optional" maxlength="30"/></div>
@@ -311,17 +316,17 @@
         <button class="fixture-add-btn" onclick="addFixture()">➕ Add to schedule</button>
       </div>
       
-      <div id="fixture-list-container">
-         </div>
+      <div id="fixture-list-container"></div>
     </div>
   </div>
 
   <div id="view-spectator" class="view">
     <div class="spectator">
       <div id="spec-fixture-select">
-        <div class="section-label" style="margin-bottom:12px;">👁️ Select a fixture to watch</div>
-        <div class="spec-fixture-list" id="spec-fixture-list"><div class="empty-fixtures">No fixtures scheduled yet</div></div>
+        <div class="section-label" style="margin-bottom:12px;">👁️ Live Match Center</div>
+        <div id="spec-grouped-container"></div>
       </div>
+      
       <div id="spec-score-panel" class="spec-score-panel">
         <button class="spec-back-btn" id="spec-back-button" onclick="specBack()">⬅️ All fixtures</button>
         <div class="spec-meta">
@@ -372,7 +377,6 @@
 
   function checkAdminAccess() {
     if (adminPin === '1234') return true; 
-    
     const input = prompt("Enter Admin PIN to manage match data:");
     if (input === '1234') {
       adminPin = input;
@@ -410,7 +414,6 @@
       const dateB = b.date || "";
       const dateCompare = dateA.localeCompare(dateB);
       if (dateCompare !== 0) return dateCompare;
-      
       const timeA = a.time || "00:00";
       const timeB = b.time || "00:00";
       return timeA.localeCompare(timeB);
@@ -436,13 +439,46 @@
     if (tabName === 'spectator') tabBtns[2].classList.add('active');
   }
 
+  // HELPER: Split data into upcoming vs past array groupings
+  function getTimelineSplits() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const upcomingList = [];
+    const pastList = [];
+    fixtures.forEach(fx => {
+      const matchDate = fx.date || "";
+      if (matchDate >= todayStr && !fx.finished) {
+        upcomingList.push(fx);
+      } else {
+        pastList.push(fx);
+      }
+    });
+    return { upcomingList, pastList };
+  }
+
+  function groupByCompetition(list) {
+    const groups = {};
+    list.forEach(fx => {
+      const compName = (fx.comp || "Uncategorized").trim();
+      if (!groups[compName]) groups[compName] = [];
+      groups[compName].push(fx);
+    });
+    return groups;
+  }
+
+  // UPDATED: Only shows upcoming fixtures
   function renderScorerPickList(){
     const el=document.getElementById('scorer-pick-list');
-    if(!fixtures.length){el.innerHTML='<div class="no-fixtures-msg">No fixtures yet — add them in the Fixtures tab</div>';return;}
-    el.innerHTML=fixtures.map(fx=>{
+    const { upcomingList } = getTimelineSplits();
+    
+    if(!upcomingList.length){
+      el.innerHTML='<div class="no-fixtures-msg">No upcoming fixtures scheduled</div>';
+      return;
+    }
+    
+    el.innerHTML=upcomingList.map(fx=>{
       const isActive=fx.id===activeFixtureId;
       const meta=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min match':null, fx.venue].filter(Boolean).join(' · ');
-      const badge=fx.finished?'<span class="fp-badge ft">FT</span>':fx.running?'<span class="fp-badge live">Live</span>':'';
+      const badge=fx.running?'<span class="fp-badge live">Live</span>':'';
       return '<div class="fixture-pick-row'+(isActive?' active-fx':'')+' "onclick="loadFixture('+fx.id+')">'
         +'<div class="fp-left-content">'+getLogoHtml(fx.logo1)+'<div><div class="fp-teams">'+fx.team1+' vs '+fx.team2+'</div>'+(meta?'<div class="fp-meta">'+meta+'</div>':'')+'</div></div>'
         +'<div class="fp-right">'+badge+'<span class="fp-score">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span></div>'
@@ -587,12 +623,9 @@
   function endHalfManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    
     const currentHalfName = fx.half === 1 ? 'Half Time' : 'Full Time';
     if(!confirm(`Are you sure you want to trigger ${currentHalfName} now?`)) return;
-
     if(!fx.events) fx.events = [];
-    
     if(fx.running && fx.timerStartTime) {
       let currentServerTime = Date.now() + serverTimeOffset;
       let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
@@ -600,9 +633,7 @@
     }
     fx.timerStartTime = null;
     fx.running = false;
-
     let timeStampStr = fxTime(fx);
-
     if(fx.half === 1){
       fx.halfTime = true;
       fx.events.push({team:'Match', type:'Half time called', time: timeStampStr});
@@ -616,9 +647,7 @@
   function endGameManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    
     if(!confirm('Are you sure you want to declare Full Time for this game?')) return;
-    
     if(fx.running && fx.timerStartTime) {
       let currentServerTime = Date.now() + serverTimeOffset;
       let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
@@ -628,7 +657,6 @@
     fx.running = false;
     fx.finished = true;
     fx.halfTime = false;
-    
     let timeStampStr = fxTime(fx);
     if(!fx.events) fx.events=[];
     fx.events.push({team:'Match', type:'Full time!', time: timeStampStr});
@@ -638,12 +666,7 @@
   function resetTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
-    fx.half=1;
-    fx.seconds=0;
-    fx.halfTime=false;
-    fx.running=false;
-    fx.finished=false;
-    fx.timerStartTime = null;
+    fx.half=1;fx.seconds=0;fx.halfTime=false;fx.running=false;fx.finished=false;fx.timerStartTime = null;
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
@@ -658,10 +681,8 @@
   function addScore(team, pts){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    
     let finalPoints = pts;
     if(pts === 1) finalPoints = 3; 
-
     if(team===1){
       if(pts===-1) fx.score1=Math.max(0,fx.score1-1);
       else fx.score1=(fx.score1||0)+finalPoints;
@@ -669,16 +690,10 @@
       if(pts===-1) fx.score2=Math.max(0,fx.score2-1);
       else fx.score2=(fx.score2||0)+finalPoints;
     }
-    
     let typeText = scoreTypeMap[String(pts)];
     if(pts !== -1) typeText += ` (+${finalPoints})`;
-
     if(!fx.events) fx.events=[];
-    fx.events.push({
-      team: team===1?fx.team1:fx.team2,
-      type: typeText,
-      time: fxTime(fx)
-    });
+    fx.events.push({team: team===1?fx.team1:fx.team2, type: typeText, time: fxTime(fx)});
     db.ref('fixtures/' + fx.id).update(fx);
   }
 
@@ -686,91 +701,86 @@
     collapsedGroups[groupId] = !collapsedGroups[groupId];
     const groupEl = document.getElementById(groupId);
     if (groupEl) {
-      if (collapsedGroups[groupId]) {
-        groupEl.classList.add('collapsed');
-      } else {
-        groupEl.classList.remove('collapsed');
-      }
+      if (collapsedGroups[groupId]) groupEl.classList.add('collapsed');
+      else groupEl.classList.remove('collapsed');
     }
   }
 
+  // CORE RENDER METHOD FOR ADMINISTRATIVE FIXTURES VIEW
   function renderFixtureList(){
     const container = document.getElementById('fixture-list-container');
     if(!fixtures.length){
       container.innerHTML='<div class="empty-fixtures">No fixtures yet</div>';
       return;
     }
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    const upcomingList = [];
-    const pastList = [];
-
-    fixtures.forEach(fx => {
-      const matchDate = fx.date || "";
-      if (matchDate >= todayStr && !fx.finished) {
-        upcomingList.push(fx);
-      } else {
-        pastList.push(fx);
-      }
-    });
-
-    const groupByCompetition = (list) => {
-      const groups = {};
-      list.forEach(fx => {
-        const compName = (fx.comp || "Uncategorized").trim();
-        if (!groups[compName]) groups[compName] = [];
-        groups[compName].push(fx);
-      });
-      return groups;
-    };
-
+    const { upcomingList, pastList } = getTimelineSplits();
     const upcomingGrouped = groupByCompetition(upcomingList);
     const pastGrouped = groupByCompetition(pastList);
 
     let htmlOutput = "";
+    htmlOutput += generateGroupedTimelineHtml(upcomingGrouped, "admin-up", "📅 Upcoming Matches", false, true);
+    htmlOutput += generateGroupedTimelineHtml(pastGrouped, "admin-past", "⏱️ Past Matches", true, true);
+    container.innerHTML = htmlOutput;
+  }
 
-    function generateTimelineHtml(groupedObject, sectionKeyPrefix, titleLabel, isPast) {
-      const keys = Object.keys(groupedObject);
-      if (keys.length === 0) return "";
+  // NEW: Renders grouped content inside the Spectator selection menu
+  function renderSpecFixtureList(){
+    const container = document.getElementById('spec-grouped-container');
+    if(!fixtures.length){
+      container.innerHTML='<div class="empty-fixtures">No fixtures scheduled yet</div>';
+      return;
+    }
+    const { upcomingList, pastList } = getTimelineSplits();
+    const upcomingGrouped = groupByCompetition(upcomingList);
+    const pastGrouped = groupByCompetition(pastList);
 
-      let sectionHtml = `<div class="timeline-heading ${isPast ? 'past' : ''}">${titleLabel}</div>`;
+    let htmlOutput = "";
+    htmlOutput += generateGroupedTimelineHtml(upcomingGrouped, "spec-up", "📅 Upcoming Matches", false, false);
+    htmlOutput += generateGroupedTimelineHtml(pastGrouped, "spec-past", "⏱️ Past Matches", true, false);
+    container.innerHTML = htmlOutput;
+  }
+
+  // SHARED GENERATOR Engine: Handles structure generation for Admin and Spectator grids
+  function generateGroupedTimelineHtml(groupedObject, sectionKeyPrefix, titleLabel, isPast, isAdminView) {
+    const keys = Object.keys(groupedObject);
+    if (keys.length === 0) return "";
+
+    let sectionHtml = `<div class="timeline-heading ${isPast ? 'past' : ''}">${titleLabel}</div>`;
+    
+    keys.forEach((compName, idx) => {
+      const matchArray = groupedObject[compName];
+      const groupId = `${sectionKeyPrefix}-group-${idx}-${compName.replace(/\s+/g, '-').toLowerCase()}`;
       
-      keys.forEach((compName, idx) => {
-        const matchArray = groupedObject[compName];
-        const groupId = `${sectionKeyPrefix}-group-${idx}-${compName.replace(/\s+/g, '-').toLowerCase()}`;
-        
-        if (collapsedGroups[groupId] === undefined) {
-          collapsedGroups[groupId] = isPast; 
-        }
+      if (collapsedGroups[groupId] === undefined) {
+        collapsedGroups[groupId] = isPast; 
+      }
+      const collapsedClass = collapsedGroups[groupId] ? 'collapsed' : '';
 
-        const collapsedClass = collapsedGroups[groupId] ? 'collapsed' : '';
-
-        sectionHtml += `
-          <div class="comp-group ${collapsedClass}" id="${groupId}">
-            <div class="comp-header" onclick="toggleGroupCollapse('${groupId}')">
-              <div class="comp-header-title">
-                <span>🏆 ${compName}</span>
-                <span class="comp-count-badge">${matchArray.length}</span>
-              </div>
-              <span class="comp-chevron">▼</span>
+      sectionHtml += `
+        <div class="comp-group ${collapsedClass}" id="${groupId}">
+          <div class="comp-header" onclick="toggleGroupCollapse('${groupId}')">
+            <div class="comp-header-title">
+              <span>🏆 ${compName}</span>
+              <span class="comp-count-badge">${matchArray.length}</span>
             </div>
-            <div class="comp-content">
-        `;
+            <span class="comp-chevron">▼</span>
+          </div>
+          <div class="comp-content">
+      `;
 
-        matchArray.forEach(fx => {
+      matchArray.forEach(fx => {
+        const detail = [fx.time ? 'KO: ' + fx.time : null, fx.date, fx.halfDuration ? fx.halfDuration * 2 + 'min' : null, fx.venue].filter(Boolean).join(' · ');
+        const badge = fx.finished ? '<span class="fx-badge ft">FT</span>' : fx.running ? '<span class="fx-badge live"><span class="live-dot"></span> Live</span>' : '';
+        const scoreString = `<span style="font-family:var(--font-mono);font-size:13px;font-weight:700;">${fx.score1 || 0} – ${fx.score2 || 0}</span>`;
+
+        if (isAdminView) {
           const isActive = fx.id === activeFixtureId;
-          const detail = [fx.time ? 'KO: ' + fx.time : null, fx.date, fx.halfDuration ? fx.halfDuration * 2 + 'min' : null, fx.venue].filter(Boolean).join(' · ');
-          const badge = fx.finished ? '<span class="fx-badge ft">FT</span>' : fx.running ? '<span class="fx-badge live">Live</span>' : '';
-          
           sectionHtml += `
             <div class="fixture-row ${isActive ? 'active-fixture' : ''}">
               <div class="fixture-left-content">
                 ${getLogoHtml(fx.logo1)}
                 <div>
-                  <div class="fixture-teams">
-                    ${fx.team1} vs ${fx.team2} 
-                    <span style="font-family:var(--font-mono);font-size:13px;color:var(--color-text2)">${fx.score1 || 0} – ${fx.score2 || 0}</span>
-                  </div>
+                  <div class="fixture-teams">${fx.team1} vs ${fx.team2} ${scoreString}</div>
                   ${detail ? `<div class="fixture-detail">${detail}</div>` : ''}
                 </div>
               </div>
@@ -779,31 +789,36 @@
                 <button class="fx-action-btn" onclick="openEditPanel(${fx.id})" title="Edit">✏️</button>
                 <button class="fx-action-btn del" onclick="deleteFixture(${fx.id})" title="Delete">🗑️</button>
               </div>
-            </div>
-          `;
-        });
-
-        sectionHtml += `</div></div>`;
+            </div>`;
+        } else {
+          const isSelected = fx.id === specViewingId;
+          sectionHtml += `
+            <div class="spec-fixture-btn ${isSelected ? 'selected' : ''}" onclick="specSelectFixture(${fx.id})">
+              <div class="spec-left-side">
+                ${getLogoHtml(fx.logo1)}
+                <div>
+                  <div class="spec-fx-teams">${fx.team1} vs ${fx.team2}</div>
+                  ${detail ? `<div class="spec-fx-detail">${detail}</div>` : ''}
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">${badge}${scoreString}</div>
+            </div>`;
+        }
       });
 
-      return sectionHtml;
-    }
+      sectionHtml += `</div></div>`;
+    });
 
-    htmlOutput += generateTimelineHtml(upcomingGrouped, "upcoming", "📅 Upcoming Matches", false);
-    htmlOutput += generateTimelineHtml(pastGrouped, "past", "⏱️ Past Matches", true);
-
-    container.innerHTML = htmlOutput;
+    return sectionHtml;
   }
 
   function openEditPanel(id) {
      if(!checkAdminAccess()) return;
      const fx = fixtures.find(f => f.id === id);
      if(!fx) return;
-
      document.getElementById('create-fixture-panel').style.display = 'none';
      const panel = document.getElementById('edit-fixture-panel');
      panel.style.display = 'block';
-
      document.getElementById('edit-fx-id').value = fx.id;
      document.getElementById('edit-fx-team1').value = fx.team1 || '';
      document.getElementById('edit-fx-team2').value = fx.team2 || '';
@@ -814,7 +829,6 @@
      document.getElementById('edit-fx-duration').value = fx.halfDuration || 40;
      document.getElementById('edit-fx-venue').value = fx.venue || '';
      document.getElementById('edit-fx-comp').value = fx.comp || '';
-
      panel.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -827,16 +841,13 @@
      if(!checkAdminAccess()) return;
      const id = document.getElementById('edit-fx-id').value;
      if(!id) return;
-
      const t1 = document.getElementById('edit-fx-team1').value.trim();
      const t2 = document.getElementById('edit-fx-team2').value.trim();
      if(!t1 || !t2) { alert('Both team names are required.'); return; }
-
      const dur = parseInt(document.getElementById('edit-fx-duration').value) || 40;
 
      const updatePayload = {
-        team1: t1,
-        team2: t2,
+        team1: t1, team2: t2,
         logo1: document.getElementById('edit-fx-logo1').value.trim(),
         logo2: document.getElementById('edit-fx-logo2').value.trim(),
         date: document.getElementById('edit-fx-date').value || '',
@@ -847,11 +858,7 @@
      };
 
      db.ref('fixtures/' + id).update(updatePayload, (error) => {
-        if(error) {
-           alert("Failed to save changes: " + error.message);
-        } else {
-           closeEditPanel();
-        }
+        if(!error) closeEditPanel();
      });
   }
 
@@ -865,9 +872,7 @@
     const newId = Date.now();
     const payload = {};
     payload[newId] = {
-      id:newId,
-      team1:t1,
-      team2:t2,
+      id:newId, team1:t1, team2:t2,
       logo1:document.getElementById('fx-logo1').value.trim(),
       logo2:document.getElementById('fx-logo2').value.trim(),
       date:document.getElementById('fx-date').value || '',
@@ -879,28 +884,19 @@
     };
 
     db.ref('fixtures').update(payload, (error) => {
-      if(error) {
-         alert("Data saving error: " + error.message);
-      } else {
+      if(!error) {
          db.ref('fixtures').get().then((snap) => {
             if(snap.exists()){
-               const fresh = snap.val();
-               const rawArr = Object.keys(fresh).map(k => fresh[k]);
-               fixtures = sortFixturesChronologically(rawArr);
-               renderFixtureList();
-               renderScorerPickList();
-               renderSpecFixtureList();
+               fixtures = sortFixturesChronologically(Object.values(snap.val()));
+               renderFixtureList(); renderScorerPickList(); renderSpecFixtureList();
             }
          });
       }
     });
 
-    document.getElementById('fx-team1').value='';
-    document.getElementById('fx-team2').value='';
-    document.getElementById('fx-logo1').value='';
-    document.getElementById('fx-logo2').value='';
-    document.getElementById('fx-venue').value='';
-    document.getElementById('fx-comp').value='';
+    document.getElementById('fx-team1').value=''; document.getElementById('fx-team2').value='';
+    document.getElementById('fx-logo1').value=''; document.getElementById('fx-logo2').value='';
+    document.getElementById('fx-venue').value=''; document.getElementById('fx-comp').value='';
     document.getElementById('fx-duration').value='40';
   }
 
@@ -910,21 +906,6 @@
     if(activeFixtureId===id) activeFixtureId=null;
     if(specViewingId===id){specViewingId=null;document.getElementById('spec-score-panel').style.display='none';document.getElementById('spec-fixture-select').style.display='block';}
     db.ref('fixtures/' + id).remove();
-  }
-
-  function renderSpecFixtureList(){
-    const el=document.getElementById('spec-fixture-list');
-    if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures scheduled yet</div>';return;}
-    el.innerHTML=fixtures.map(fx=>{
-      const isSelected=fx.id===specViewingId;
-      const detail=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min':null, fx.venue].filter(Boolean).join(' · ');
-      const liveDot=fx.running?'<span class="live-dot"></span> ':'';
-      const score='<span style="font-family:var(--font-mono);font-size:14px;font-weight:700;">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span>';
-      const badge=fx.finished?'<span class="fx-badge ft" style="margin-right:4px">FT</span>':'';
-      return '<div class="spec-fixture-btn'+(isSelected?' selected':'')+' "onclick="specSelectFixture('+fx.id+')">'
-        +'<div class="spec-left-side">'+getLogoHtml(fx.logo1)+'<div><div class="spec-fx-teams">'+liveDot+fx.team1+' vs '+fx.team2+'</div>'+(detail?'<div class="spec-fx-detail">'+detail+'</div>':'')+'</div></div>'
-        +'<div style="display:flex;align-items:center;gap:6px;">'+badge+score+'</div></div>';
-    }).join('');
   }
 
   function specSelectFixture(id){
@@ -973,19 +954,14 @@
            <span class="spec-event-type">${e.type}</span>
         </div>
         <span class="spec-event-time">${e.time}</span>
-      </div>
-    `}).join('');
+      </div>`
+    }).join('');
   }
 
   function initRealtimeSync(){
     db.ref('fixtures').on('value', (snapshot) => {
       const data = snapshot.val();
-      if(data) {
-        const unsorted = Object.keys(data).map(key => data[key]);
-        fixtures = sortFixturesChronologically(unsorted);
-      } else {
-        fixtures = [];
-      }
+      fixtures = data ? sortFixturesChronologically(Object.values(data)) : [];
       
       renderFixtureList();
       renderScorerPickList();
@@ -996,20 +972,13 @@
         if(currentFx) {
           const timerEl = document.getElementById('timer');
           if(timerEl) timerEl.textContent = fxTime(currentFx);
-          const s1 = document.getElementById('score1');
-          if(s1) s1.textContent = currentFx.score1 || 0;
-          const s2 = document.getElementById('score2');
-          if(s2) s2.textContent = currentFx.score2 || 0;
-          const hl = document.getElementById('half-label');
-          if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : (currentFx.half === 2 ? '2nd Half' : ''));
-          const hb = document.getElementById('halftime-banner');
-          if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
-          
-          renderEvents();
-          updateStartBtn(currentFx);
+          const s1 = document.getElementById('score1'); if(s1) s1.textContent = currentFx.score1 || 0;
+          const s2 = document.getElementById('score2'); if(s2) s2.textContent = currentFx.score2 || 0;
+          const hl = document.getElementById('half-label'); if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : '2nd Half');
+          const hb = document.getElementById('halftime-banner'); if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
+          renderEvents(); updateStartBtn(currentFx);
         } else {
-          activeFixtureId = null;
-          renderScorerActive();
+          activeFixtureId = null; renderScorerActive();
         }
       }
       if(specViewingId) renderSpecPanel();
@@ -1018,11 +987,8 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     initRealtimeSync();
-
     const urlParams = new URLSearchParams(window.location.search);
-    const role = urlParams.get('role');
-    
-    if (role === 'spectator') {
+    if (urlParams.get('role') === 'spectator') {
       document.getElementById('app-tabs').style.display = 'none';
       switchTab('spectator');
       setTimeout(() => {
