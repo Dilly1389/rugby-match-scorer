@@ -121,12 +121,17 @@
   .team-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
   .team-name-static { font-size: 15px; font-weight: 700; color: var(--color-text); width: 100%; word-break: break-word; }
   .score-display { font-size: 64px; font-weight: 700; font-family: var(--font-mono); text-align: center; line-height: 1; color: var(--color-text); }
+  
   .score-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; }
   .score-btn { background: var(--color-surface2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 7px 4px; font-size: 11px; font-weight: 600; color: var(--color-text2); cursor: pointer; text-align: center; transition: background 0.1s; }
   .score-btn:hover { background: var(--color-border2); color: var(--color-text); }
   .score-btn:active { transform: scale(0.97); }
   .score-btn .pts { font-size: 16px; font-weight: 700; display: block; color: var(--color-text); }
-  .minus-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 7px; font-size: 18px; color: var(--color-text2); cursor: pointer; width: 100%; text-align: center; }
+  
+  .miss-btn { background: transparent; border: 1px solid var(--color-warning-border); color: var(--color-warning); border-radius: var(--radius-sm); padding: 6px 4px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%; text-align: center; transition: background 0.1s; }
+  .miss-btn:hover { background: var(--color-warning-bg); }
+  
+  .minus-btn { background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 6px; font-size: 14px; color: var(--color-text3); cursor: pointer; width: 100%; text-align: center; }
   .minus-btn:hover { background: var(--color-danger-bg); color: var(--color-danger); border-color: var(--color-danger-border); }
   .vs-col { display: flex; align-items: center; justify-content: center; }
   .vs-text { font-size: 13px; font-weight: 600; color: var(--color-text3); }
@@ -439,7 +444,6 @@
     if (tabName === 'spectator') tabBtns[2].classList.add('active');
   }
 
-  // HELPER: Split data into upcoming vs past array groupings
   function getTimelineSplits() {
     const todayStr = new Date().toISOString().split('T')[0];
     const upcomingList = [];
@@ -465,7 +469,6 @@
     return groups;
   }
 
-  // UPDATED: Only shows upcoming fixtures
   function renderScorerPickList(){
     const el=document.getElementById('scorer-pick-list');
     const { upcomingList } = getTimelineSplits();
@@ -513,7 +516,11 @@
             <button class="score-btn" onclick="addScore(1,3)"><span class="pts">3</span>Penalty</button>
             <button class="score-btn" onclick="addScore(1,1)"><span class="pts">3</span>Drop Goal</button>
           </div>
-          <button class="minus-btn" onclick="addScore(1,-1)">−</button>
+          <div style="display:flex; gap:4px; width:100%; margin-top:2px;">
+             <button class="miss-btn" onclick="logMissedKick(1, 'Conversion')">❌ Miss Conv</button>
+             <button class="miss-btn" onclick="logMissedKick(1, 'Penalty')">❌ Miss Pen</button>
+          </div>
+          <button class="minus-btn" onclick="addScore(1,-1)">Correction (-1pt)</button>
         </div>
         <div class="vs-col"><div class="vs-text">VS</div></div>
         <div class="team-card">
@@ -526,7 +533,11 @@
             <button class="score-btn" onclick="addScore(2,3)"><span class="pts">3</span>Penalty</button>
             <button class="score-btn" onclick="addScore(2,1)"><span class="pts">3</span>Drop Goal</button>
           </div>
-          <button class="minus-btn" onclick="addScore(2,-1)">−</button>
+          <div style="display:flex; gap:4px; width:100%; margin-top:2px;">
+             <button class="miss-btn" onclick="logMissedKick(2, 'Conversion')">❌ Miss Conv</button>
+             <button class="miss-btn" onclick="logMissedKick(2, 'Penalty')">❌ Miss Pen</button>
+          </div>
+          <button class="minus-btn" onclick="addScore(2,-1)">Correction (-1pt)</button>
         </div>
       </div>
       <div class="ctrl-row">
@@ -681,6 +692,13 @@
   function addScore(team, pts){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
+    
+    let scorerName = "";
+    if(pts !== -1) {
+      scorerName = prompt("Enter Scorer Name or Jersey # (Leave blank if unknown):") || "";
+      scorerName = scorerName.trim();
+    }
+
     let finalPoints = pts;
     if(pts === 1) finalPoints = 3; 
     if(team===1){
@@ -690,8 +708,28 @@
       if(pts===-1) fx.score2=Math.max(0,fx.score2-1);
       else fx.score2=(fx.score2||0)+finalPoints;
     }
+    
     let typeText = scoreTypeMap[String(pts)];
-    if(pts !== -1) typeText += ` (+${finalPoints})`;
+    if(pts !== -1) {
+       typeText += ` (+${finalPoints})`;
+       if(scorerName) typeText += ` by ${scorerName}`;
+    }
+    
+    if(!fx.events) fx.events=[];
+    fx.events.push({team: team===1?fx.team1:fx.team2, type: typeText, time: fxTime(fx)});
+    db.ref('fixtures/' + fx.id).update(fx);
+  }
+
+  function logMissedKick(team, kickType) {
+    if(!checkAdminAccess()) return;
+    const fx=getActiveFx();if(!fx||fx.finished)return;
+    
+    let kickerName = prompt("Enter Kicker Name or Jersey # (Leave blank if unknown):") || "";
+    kickerName = kickerName.trim();
+    
+    let typeText = `Missed ${kickType}`;
+    if(kickerName) typeText += ` by ${kickerName}`;
+    
     if(!fx.events) fx.events=[];
     fx.events.push({team: team===1?fx.team1:fx.team2, type: typeText, time: fxTime(fx)});
     db.ref('fixtures/' + fx.id).update(fx);
@@ -706,7 +744,6 @@
     }
   }
 
-  // CORE RENDER METHOD FOR ADMINISTRATIVE FIXTURES VIEW
   function renderFixtureList(){
     const container = document.getElementById('fixture-list-container');
     if(!fixtures.length){
@@ -723,7 +760,6 @@
     container.innerHTML = htmlOutput;
   }
 
-  // NEW: Renders grouped content inside the Spectator selection menu
   function renderSpecFixtureList(){
     const container = document.getElementById('spec-grouped-container');
     if(!fixtures.length){
@@ -740,7 +776,6 @@
     container.innerHTML = htmlOutput;
   }
 
-  // SHARED GENERATOR Engine: Handles structure generation for Admin and Spectator grids
   function generateGroupedTimelineHtml(groupedObject, sectionKeyPrefix, titleLabel, isPast, isAdminView) {
     const keys = Object.keys(groupedObject);
     if (keys.length === 0) return "";
@@ -927,78 +962,56 @@
     const fx=fixtures.find(f=>f.id===specViewingId);if(!fx)return;
     document.getElementById('spec-timer').textContent=fxTime(fx);
     document.getElementById('spec-half').textContent=fx.finished?'Match Ended':(fx.half===1?'1st Half':'2nd Half');
-    document.getElementById('spec-score1').textContent=fx.score1||0;
-    document.getElementById('spec-score2').textContent=fx.score2||0;
-    document.getElementById('spec-name1').textContent=fx.team1;
-    document.getElementById('spec-name2').textContent=fx.team2;
-    document.getElementById('spec-match-label').textContent=fx.comp||'Rugby Match';
-    
-    document.getElementById('spec-img1-container').innerHTML = getLogoHtml(fx.logo1, 'team-logo-lg');
-    document.getElementById('spec-img2-container').innerHTML = getLogoHtml(fx.logo2, 'team-logo-lg');
     document.getElementById('spec-halftime').style.display=fx.halfTime?'block':'none';
+    document.getElementById('spec-match-label').innerHTML=fx.running?'<span class="live-dot"></span> Live Match Center':(fx.comp||'Rugby Union');
     
-    const l1=document.getElementById('spec-lead1');
-    const l2=document.getElementById('spec-lead2');
-    l1.innerHTML='';l2.innerHTML='';
-    if(fx.score1>fx.score2)l1.innerHTML='<span class="leading-tag">Leading</span>';
-    else if(fx.score2>fx.score1)l2.innerHTML='<span class="leading-tag">Leading</span>';
+    document.getElementById('spec-name1').textContent=fx.team1;
+    document.getElementById('spec-score1').textContent=fx.score1||0;
+    document.getElementById('spec-img1-container').innerHTML=getLogoHtml(fx.logo1, 'team-logo-lg');
+    
+    document.getElementById('spec-name2').textContent=fx.team2;
+    document.getElementById('spec-score2').textContent=fx.score2||0;
+    document.getElementById('spec-img2-container').innerHTML=getLogoHtml(fx.logo2, 'team-logo-lg');
 
-    const evEl=document.getElementById('spec-events-list');
+    const s1=fx.score1||0; const s2=fx.score2||0;
+    document.getElementById('spec-lead1').innerHTML=(s1>s2)?'<span class="leading-tag">Leading</span>':'';
+    document.getElementById('spec-lead2').innerHTML=(s2>s1)?'<span class="leading-tag">Leading</span>':'';
+
+    const evBox=document.getElementById('spec-events-list');
     const evts=fx.events||[];
-    if(!evts.length){evEl.innerHTML='<div class="spec-no-events">No events yet</div>';return;}
-    evEl.innerHTML=evts.slice().reverse().map(e=>{
-      return `
-      <div class="spec-event-row">
-        <div class="spec-event-main">
-           <span class="spec-event-team">${e.team}</span>
-           <span class="spec-event-type">${e.type}</span>
-        </div>
-        <span class="spec-event-time">${e.time}</span>
-      </div>`
-    }).join('');
+    if(!evts.length){
+      evBox.innerHTML='<div class="spec-no-events">No events recorded yet</div>';
+    }else{
+      evBox.innerHTML=evts.slice().reverse().map(e=>{
+        return `<div class="spec-event-row">
+          <div class="spec-event-main">
+            <span class="spec-event-team">${e.team}</span>
+            <span class="spec-event-type">${e.type}</span>
+          </div>
+          <span class="spec-event-time">${e.time||'--:--'}</span>
+        </div>`;
+      }).join('');
+    }
   }
 
-  function initRealtimeSync(){
-    db.ref('fixtures').on('value', (snapshot) => {
-      const data = snapshot.val();
-      fixtures = data ? sortFixturesChronologically(Object.values(data)) : [];
-      
-      renderFixtureList();
-      renderScorerPickList();
-      renderSpecFixtureList();
-      
-      if(activeFixtureId) {
-        const currentFx = getActiveFx();
-        if(currentFx) {
-          const timerEl = document.getElementById('timer');
-          if(timerEl) timerEl.textContent = fxTime(currentFx);
-          const s1 = document.getElementById('score1'); if(s1) s1.textContent = currentFx.score1 || 0;
-          const s2 = document.getElementById('score2'); if(s2) s2.textContent = currentFx.score2 || 0;
-          const hl = document.getElementById('half-label'); if(hl) hl.textContent = currentFx.finished ? 'Match Ended' : (currentFx.half === 1 ? '1st Half' : '2nd Half');
-          const hb = document.getElementById('halftime-banner'); if(hb) hb.style.display = currentFx.halfTime ? 'block' : 'none';
-          renderEvents(); updateStartBtn(currentFx);
-        } else {
-          activeFixtureId = null; renderScorerActive();
-        }
-      }
-      if(specViewingId) renderSpecPanel();
-    });
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    initRealtimeSync();
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('role') === 'spectator') {
-      document.getElementById('app-tabs').style.display = 'none';
-      switchTab('spectator');
-      setTimeout(() => {
-        if(fixtures.length === 1){
-          specSelectFixture(fixtures[0].id);
-          document.getElementById('spec-back-button').style.display = 'none';
-        }
-      }, 1500);
+  // GLOBAL FIREBASE SYNCHRONIZER
+  db.ref('fixtures').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(data) {
+      fixtures = sortFixturesChronologically(Object.values(data));
     } else {
+      fixtures = [];
+    }
+    
+    renderFixtureList();
+    renderScorerPickList();
+    renderSpecFixtureList();
+    
+    if(activeFixtureId) {
       renderScorerActive();
+    }
+    if(specViewingId) {
+      renderSpecPanel();
     }
   });
 </script>
