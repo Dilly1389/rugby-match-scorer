@@ -82,7 +82,10 @@
   .board { padding: 1.25rem 1rem; }
   .fixture-picker { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
   .fixture-picker-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 10px; }
-  .fixture-pick-list { display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; }
+  
+  /* CHANGED MAX-HEIGHT TO NONE SO ALL FIXTURES ARE VISIBLE SIMULTANEOUSLY */
+  .fixture-pick-list { display: flex; flex-direction: column; gap: 10px; max-height: none; overflow-y: visible; }
+  
   .fixture-pick-row { display: flex; align-items: center; justify-content: space-between; background: var(--color-surface2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 9px 12px; cursor: pointer; transition: border-color 0.15s; width: 100%; }
   .fixture-pick-row:hover { border-color: var(--color-info); }
   .fixture-pick-row.active-fx { border: 2px solid var(--color-info); background: var(--color-info-bg); }
@@ -163,7 +166,10 @@
   .fixture-meta-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .fixture-add-btn { width: 100%; background: var(--color-info-bg); color: var(--color-info); border: 1px solid var(--color-info-border); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
   .fixture-add-btn:hover { background: rgba(26,115,232,0.15); }
+  
+  /* REMOVED CONTAINER HEIGHT RESTRAINTS ON LIST WRAPPERS */
   .fixture-list { display: flex; flex-direction: column; gap: 10px; }
+  
   .fixture-row { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
   .fixture-row.active-fixture { border-color: var(--color-info); }
   .fixture-left-content { display: flex; align-items: center; gap: 12px; }
@@ -189,7 +195,10 @@
 
   /* SPECTATOR */
   .spectator { padding: 1.5rem 1rem; }
-  .spec-fixture-list { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; }
+  
+  /* ENHANCED FOR FULL VISIBILITY WITHOUT CUTTING OFF */
+  .spec-fixture-list { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; max-height: none; overflow-y: visible; }
+  
   .spec-fixture-btn { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.15s; width: 100%; }
   .spec-fixture-btn:hover { border-color: var(--color-info); }
   .spec-fixture-btn.selected { border: 2px solid var(--color-info); background: var(--color-info-bg); }
@@ -218,7 +227,7 @@
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
   .spec-halftime { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
-  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
+  .live-dot { inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
@@ -505,20 +514,17 @@
   
   function getActiveFx(){return fixtures.find(f=>f.id===activeFixtureId)||null;}
 
-  // SORT FUNCTION: Orders by Time first, then secondary sorts by Date
+  // FIXED SORT LOGIC: Properly group and order chronologically by Date first, then sequentially by kick-off Time
   function sortFixturesChronologically(fixturesArray) {
     return fixturesArray.sort((a, b) => {
+      const dateA = a.date || "9999-12-31";
+      const dateB = b.date || "9999-12-31";
+      const dateCompare = dateA.localeCompare(dateB);
+      if (dateCompare !== 0) return dateCompare;
+
       const timeA = a.time || "00:00";
       const timeB = b.time || "00:00";
-      
-      // Compare kick-off times
-      const timeCompare = timeA.localeCompare(timeB);
-      if (timeCompare !== 0) return timeCompare;
-      
-      // If times match exactly, fall back to sorting by date
-      const dateA = a.date || "";
-      const dateB = b.date || "";
-      return dateA.localeCompare(dateB);
+      return timeA.localeCompare(timeB);
     });
   }
 
@@ -542,9 +548,6 @@
     if (tabName === 'spectator') tabBtns[2].classList.add('active');
   }
 
-  /**
-   * Helper function to partition and map fixtures into unique Competition + Date buckets
-   */
   function getGroupedFixtures(fixturesArray) {
     const upcoming = fixturesArray.filter(f => !f.finished);
     const past = fixturesArray.filter(f => f.finished);
@@ -569,10 +572,11 @@
     };
   }
 
-  /**
-   * Universal builder helper for rendering accordion markup fields
-   */
   function buildCollapsibleGroupHTML(groupKey, headerText, itemsHTML, badgeCount) {
+    // MODIFIED DEFAULT STATE: If state is not set yet, default to false (expanded) so everything stays visible instantly
+    if (collapsedGroups[groupKey] === undefined) {
+      collapsedGroups[groupKey] = false;
+    }
     const isCollapsed = collapsedGroups[groupKey] === true;
     return `
       <div class="fixture-group-container ${isCollapsed ? 'collapsed' : ''}" data-group-id="${groupKey}">
@@ -774,7 +778,7 @@
         if(fx.running && !fx.finished) {
           const hd = (fx.halfDuration || 40) * 60;
           let currentServerTime = Date.now() + serverTimeOffset;
-          let realTimeDelta = Math.floor((currentServerTime - (fx.timerStartTime || currentServerTime)) / 1000);
+          let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
           let elapsedSeconds = (fx.seconds || 0) + realTimeDelta;
           
           if(elapsedSeconds >= hd && fx.half === 1 && !fx.halfTime) {
@@ -856,7 +860,6 @@
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
     
-    // Explicit confirmation string check depending on half context
     const actionLabel = fx.half === 1 ? "Half Time" : "Full Time";
     if (!confirm(`Are you sure you want to manually declare ${actionLabel} for this match?`)) return;
 
