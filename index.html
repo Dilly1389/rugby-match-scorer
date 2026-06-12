@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Rugby Match Scorer</title>
+<title>Laerskool Unika Rugby</title>
 <style>
   /* DEFAULT LIGHT THEME (Matches light device setups) */
   :root {
@@ -82,8 +82,11 @@
   .board { padding: 1.25rem 1rem; }
   .fixture-picker { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
   .fixture-picker-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text3); margin-bottom: 10px; }
-  .fixture-pick-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
-  .fixture-pick-row { display: flex; align-items: center; justify-content: space-between; background: var(--color-surface2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 9px 12px; cursor: pointer; transition: border-color 0.15s; }
+  
+  /* CHANGED MAX-HEIGHT TO NONE SO ALL FIXTURES ARE VISIBLE SIMULTANEOUSLY */
+  .fixture-pick-list { display: flex; flex-direction: column; gap: 10px; max-height: none; overflow-y: visible; }
+  
+  .fixture-pick-row { display: flex; align-items: center; justify-content: space-between; background: var(--color-surface2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 9px 12px; cursor: pointer; transition: border-color 0.15s; width: 100%; }
   .fixture-pick-row:hover { border-color: var(--color-info); }
   .fixture-pick-row.active-fx { border: 2px solid var(--color-info); background: var(--color-info-bg); }
   .fp-left-content { display: flex; align-items: center; gap: 10px; }
@@ -118,7 +121,7 @@
   
   /* PLAYER PICKER SCORER DROPDOWN */
   .player-assign-box { background: var(--color-surface2); border: 1px solid var(--color-info-border); border-radius: var(--radius-sm); padding: 8px; width: 100%; display: none; margin-top: 4px; flex-direction: column; gap: 6px; text-align: left; }
-  .player-assign-label { font-size: 11px; font-weight: 600; color: var(--color-info); }
+  .player-assign-box { font-size: 11px; font-weight: 600; color: var(--color-info); }
   .player-select { font-size: 12px; background: var(--color-surface); border: 1px solid var(--color-border2); border-radius: 4px; color: var(--color-text); padding: 5px; width: 100%; outline: none; }
 
   /* KICK OUTCOME SELECTION BOX */
@@ -163,8 +166,11 @@
   .fixture-meta-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .fixture-add-btn { width: 100%; background: var(--color-info-bg); color: var(--color-info); border: 1px solid var(--color-info-border); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
   .fixture-add-btn:hover { background: rgba(26,115,232,0.15); }
-  .fixture-list { display: flex; flex-direction: column; gap: 8px; }
-  .fixture-row { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  
+  /* REMOVED CONTAINER HEIGHT RESTRAINTS ON LIST WRAPPERS */
+  .fixture-list { display: flex; flex-direction: column; gap: 10px; }
+  
+  .fixture-row { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
   .fixture-row.active-fixture { border-color: var(--color-info); }
   .fixture-left-content { display: flex; align-items: center; gap: 12px; }
   .fixture-teams { font-size: 14px; font-weight: 600; color: var(--color-text); }
@@ -189,8 +195,11 @@
 
   /* SPECTATOR */
   .spectator { padding: 1.5rem 1rem; }
-  .spec-fixture-list { display: flex; flex-direction: column; gap: 8px; margin-top: 2px; }
-  .spec-fixture-btn { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.15s; }
+  
+  /* ENHANCED FOR FULL VISIBILITY WITHOUT CUTTING OFF */
+  .spec-fixture-list { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; max-height: none; overflow-y: visible; }
+  
+  .spec-fixture-btn { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.15s; width: 100%; }
   .spec-fixture-btn:hover { border-color: var(--color-info); }
   .spec-fixture-btn.selected { border: 2px solid var(--color-info); background: var(--color-info-bg); }
   .spec-left-side { display: flex; align-items: center; gap: 12px; }
@@ -218,10 +227,78 @@
   .spec-no-events { font-size: 13px; color: var(--color-text2); font-style: italic; }
   .spec-halftime { background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--color-warning); display: none; margin-bottom: 1.25rem; }
   .leading-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; background: var(--color-success-bg); color: var(--color-success); }
-  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
+  .live-dot { inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f25f5c; animation: blink 1.2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
+
+  /* FIXTURE ACCORDION GROUPING STYLES */
+  .fixture-group-container {
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    overflow: hidden;
+    width: 100%;
+  }
+  .fixture-group-header {
+    background: var(--color-surface2);
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .fixture-group-header:hover {
+    background: var(--color-border);
+  }
+  .fixture-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fixture-group-count {
+    font-size: 11px;
+    background: var(--color-border2);
+    color: var(--color-text2);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+  }
+  .fixture-group-arrow {
+    font-size: 11px;
+    color: var(--color-text3);
+    transition: transform 0.2s ease;
+  }
+  .fixture-group-container.collapsed .fixture-group-arrow {
+    transform: rotate(-90deg);
+  }
+  .fixture-group-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border-top: 1px solid var(--color-border);
+  }
+  .fixture-group-container.collapsed .fixture-group-content {
+    display: none;
+  }
+  .group-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-info);
+    letter-spacing: 0.05em;
+    margin: 12px 4px 6px 4px;
+  }
+  .group-section-title.past {
+    color: var(--color-text3);
+  }
 
   ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--color-border2); border-radius: 4px; }
 
@@ -320,7 +397,7 @@
         <button class="fixture-add-btn" onclick="addFixture()">➕ Add to schedule</button>
       </div>
       
-      <div class="section-label">📅 Scheduled fixtures (Sorted by Kick-off Time)</div>
+      <div class="section-label">📅 Scheduled fixtures (Grouped by Competition & Date)</div>
       <div class="fixture-list" id="fixture-list"><div class="empty-fixtures">No fixtures yet</div></div>
     </div>
   </div>
@@ -373,6 +450,9 @@
 
   let adminPin = localStorage.getItem('rugby_admin_pin') || '';
   let serverTimeOffset = 0;
+
+  // Track collapsed state of groups globally by key string so updates don't break selection
+  let collapsedGroups = {};
 
   db.ref(".info/serverTimeOffset").on("value", (snap) => {
     serverTimeOffset = snap.val() || 0;
@@ -434,20 +514,17 @@
   
   function getActiveFx(){return fixtures.find(f=>f.id===activeFixtureId)||null;}
 
-  // SORT FUNCTION: Orders by Time first, then secondary sorts by Date
+  // FIXED SORT LOGIC: Properly group and order chronologically by Date first, then sequentially by kick-off Time
   function sortFixturesChronologically(fixturesArray) {
     return fixturesArray.sort((a, b) => {
+      const dateA = a.date || "9999-12-31";
+      const dateB = b.date || "9999-12-31";
+      const dateCompare = dateA.localeCompare(dateB);
+      if (dateCompare !== 0) return dateCompare;
+
       const timeA = a.time || "00:00";
       const timeB = b.time || "00:00";
-      
-      // Compare kick-off times
-      const timeCompare = timeA.localeCompare(timeB);
-      if (timeCompare !== 0) return timeCompare;
-      
-      // If times match exactly, fall back to sorting by date
-      const dateA = a.date || "";
-      const dateB = b.date || "";
-      return dateA.localeCompare(dateB);
+      return timeA.localeCompare(timeB);
     });
   }
 
@@ -471,18 +548,116 @@
     if (tabName === 'spectator') tabBtns[2].classList.add('active');
   }
 
+  function getGroupedFixtures(fixturesArray) {
+    const upcoming = fixturesArray.filter(f => !f.finished);
+    const past = fixturesArray.filter(f => f.finished);
+
+    const makeGroups = (list) => {
+      const map = {};
+      list.forEach(fx => {
+        const comp = (fx.comp || "Other / Friendly").trim();
+        const date = (fx.date || "No Date").trim();
+        const groupKey = `${comp} | ${date}`;
+        if (!map[groupKey]) {
+          map[groupKey] = { competition: comp, date: date, items: [] };
+        }
+        map[groupKey].items.push(fx);
+      });
+      return Object.values(map);
+    };
+
+    return {
+      upcomingGroups: makeGroups(upcoming),
+      pastGroups: makeGroups(past)
+    };
+  }
+
+  function buildCollapsibleGroupHTML(groupKey, headerText, itemsHTML, badgeCount) {
+    // MODIFIED DEFAULT STATE: If state is not set yet, default to false (expanded) so everything stays visible instantly
+    if (collapsedGroups[groupKey] === undefined) {
+      collapsedGroups[groupKey] = false;
+    }
+    const isCollapsed = collapsedGroups[groupKey] === true;
+    return `
+      <div class="fixture-group-container ${isCollapsed ? 'collapsed' : ''}" data-group-id="${groupKey}">
+        <div class="fixture-group-header" onclick="toggleFixtureGroup('${groupKey}')">
+          <div class="fixture-group-title">
+            <span>${headerText}</span>
+            <span class="fixture-group-count">${badgeCount}</span>
+          </div>
+          <div class="fixture-group-arrow">&#9660;</div>
+        </div>
+        <div class="fixture-group-content">
+          ${itemsHTML}
+        </div>
+      </div>
+    `;
+  }
+
+  window.toggleFixtureGroup = function(groupKey) {
+    collapsedGroups[groupKey] = !collapsedGroups[groupKey];
+    renderScorerPickList();
+    renderFixtureList();
+    renderSpecFixtureList();
+  };
+
   function renderScorerPickList(){
     const el=document.getElementById('scorer-pick-list');
     if(!fixtures.length){el.innerHTML='<div class="no-fixtures-msg">No fixtures yet — add them in the Fixtures tab</div>';return;}
-    el.innerHTML=fixtures.map(fx=>{
-      const isActive=fx.id===activeFixtureId;
-      const meta=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min match':null, fx.venue].filter(Boolean).join(' · ');
-      const badge=fx.finished?'<span class="fp-badge ft">FT</span>':fx.running?'<span class="fp-badge live">Live</span>':'';
-      return '<div class="fixture-pick-row'+(isActive?' active-fx':'')+' "onclick="loadFixture('+fx.id+')">'
-        +'<div class="fp-left-content">'+getLogoHtml(fx.logo1)+'<div><div class="fp-teams">'+fx.team1+' vs '+fx.team2+'</div>'+(meta?'<div class="fp-meta">'+meta+'</div>':'')+'</div></div>'
-        +'<div class="fp-right">'+badge+'<span class="fp-score">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span></div>'
-        +'</div>';
-    }).join('');
+    
+    const { upcomingGroups, pastGroups } = getGroupedFixtures(fixtures);
+    let html = '';
+
+    if (upcomingGroups.length > 0) {
+      html += `<div class="group-section-title">Upcoming / Live Matches</div>`;
+      upcomingGroups.forEach(g => {
+        const groupKey = `scorer-upcoming-${g.competition}-${g.date}`;
+        let itemsHTML = '';
+        g.items.forEach(fx => {
+          const isActive = fx.id === activeFixtureId;
+          const meta = [fx.time ? '⏰ ' + fx.time : null, fx.halfDuration ? fx.halfDuration*2+'min' : null, fx.venue].filter(Boolean).join(' · ');
+          const badge = fx.running ? '<span class="fp-badge live">Live</span>' : '';
+          itemsHTML += `
+            <div class="fixture-pick-row ${isActive ? 'active-fx' : ''}" onclick="loadFixture(${fx.id})">
+              <div class="fp-left-content">
+                ${getLogoHtml(fx.logo1)}
+                <div>
+                  <div class="fp-teams">${fx.team1} vs ${fx.team2}</div>
+                  ${meta ? `<div class="fp-meta">${meta}</div>` : ''}
+                </div>
+              </div>
+              <div class="fp-right">${badge}<span class="fp-score">${fx.score1 || 0} – ${fx.score2 || 0}</span></div>
+            </div>`;
+        });
+        html += buildCollapsibleGroupHTML(groupKey, `${g.competition} (${g.date})`, itemsHTML, g.items.length);
+      });
+    }
+
+    if (pastGroups.length > 0) {
+      html += `<div class="group-section-title past">Past Matches</div>`;
+      pastGroups.forEach(g => {
+        const groupKey = `scorer-past-${g.competition}-${g.date}`;
+        let itemsHTML = '';
+        g.items.forEach(fx => {
+          const isActive = fx.id === activeFixtureId;
+          const meta = [fx.time ? '⏰ ' + fx.time : null, fx.venue].filter(Boolean).join(' · ');
+          itemsHTML += `
+            <div class="fixture-pick-row ${isActive ? 'active-fx' : ''}" onclick="loadFixture(${fx.id})">
+              <div class="fp-left-content">
+                ${getLogoHtml(fx.logo1)}
+                <div>
+                  <div class="fp-teams">${fx.team1} vs ${fx.team2}</div>
+                  ${meta ? `<div class="fp-meta">${meta}</div>` : ''}
+                </div>
+              </div>
+              <div class="fp-right"><span class="fp-badge ft">FT</span><span class="fp-score">${fx.score1 || 0} – ${fx.score2 || 0}</span></div>
+            </div>`;
+        });
+        html += buildCollapsibleGroupHTML(groupKey, `${g.competition} (${g.date})`, itemsHTML, g.items.length);
+      });
+    }
+
+    el.innerHTML = html;
   }
 
   function renderScorerActive(){
@@ -603,26 +778,30 @@
         if(fx.running && !fx.finished) {
           const hd = (fx.halfDuration || 40) * 60;
           let currentServerTime = Date.now() + serverTimeOffset;
-          let realTimeDelta = Math.floor((currentServerTime - (fx.timerStartTime || currentServerTime)) / 1000);
+          let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
           let elapsedSeconds = (fx.seconds || 0) + realTimeDelta;
           
           if(elapsedSeconds >= hd && fx.half === 1 && !fx.halfTime) {
-            fx.halfTime = true;
-            fx.running = false;
-            fx.seconds = hd;
-            fx.timerStartTime = null;
-            if(!fx.events) fx.events=[];
-            fx.events.push({team:'Match', type:'Half time called', time:pad(fx.halfDuration)+':00'});
-            db.ref('fixtures/' + fx.id).update({ running: false, halfTime: true, seconds: hd, timerStartTime: null, events: fx.events });
+            if (checkAdminAccess) {
+              fx.halfTime = true;
+              fx.running = false;
+              fx.seconds = hd;
+              fx.timerStartTime = null;
+              if(!fx.events) fx.events=[];
+              fx.events.push({team:'Match', type:'Half time called', time:pad(fx.halfDuration)+':00'});
+              db.ref('fixtures/' + fx.id).update({ running: false, halfTime: true, seconds: hd, timerStartTime: null, events: fx.events });
+            }
           }
           if(elapsedSeconds >= (hd * 2) && !fx.finished) {
-            fx.finished = true;
-            fx.running = false;
-            fx.seconds = hd * 2;
-            fx.timerStartTime = null;
-            if(!fx.events) fx.events=[];
-            fx.events.push({team:'Match', type:'Full time!', time:pad(fx.halfDuration * 2)+':00'});
-            db.ref('fixtures/' + fx.id).update({ running: false, finished: true, seconds: hd * 2, timerStartTime: null, events: fx.events });
+            if (checkAdminAccess) {
+              fx.finished = true;
+              fx.running = false;
+              fx.seconds = hd * 2;
+              fx.timerStartTime = null;
+              if(!fx.events) fx.events=[];
+              fx.events.push({team:'Match', type:'Full time!', time:pad(fx.halfDuration * 2)+':00'});
+              db.ref('fixtures/' + fx.id).update({ running: false, finished: true, seconds: hd * 2, timerStartTime: null, events: fx.events });
+            }
           }
         }
 
@@ -680,8 +859,11 @@
   function endHalfManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    const hd=(fx.halfDuration||40)*60;
     
+    const actionLabel = fx.half === 1 ? "Half Time" : "Full Time";
+    if (!confirm(`Are you sure you want to manually declare ${actionLabel} for this match?`)) return;
+
+    const hd=(fx.halfDuration||40)*60;
     if(!fx.events) fx.events = [];
     
     let calculatedSeconds = fx.seconds || 0;
@@ -714,7 +896,7 @@
   function endGameManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    if(!confirm('Are you sure you want to declare Full Time for this game?'))return;
+    if(!confirm('Are you sure you want to permanently declare Full Time and end this game?'))return;
     const hd=(fx.halfDuration||40)*60;
     
     let calculatedSeconds = fx.seconds || 0;
@@ -738,6 +920,7 @@
   function resetTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
+    if(!confirm('Are you sure you want to shift or reset the structural half configurations?')) return;
     const hd=(fx.halfDuration||40)*60;
     if(fx.finished){
       fx.finished=false;
@@ -760,7 +943,7 @@
   function confirmReset(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
-    if(!confirm('Reset all scores, timer and events for this match?'))return;
+    if(!confirm('CRITICAL WARNING: This will reset all scores, timeline events, and match clock back to zero for this fixture. Continue?'))return;
     fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;fx.timerStartTime=null;
     db.ref('fixtures/' + fx.id).update(fx);
   }
@@ -867,19 +1050,72 @@
   function renderFixtureList(){
     const el=document.getElementById('fixture-list');
     if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures yet</div>';return;}
-    el.innerHTML=fixtures.map(fx=>{
-      const isActive=fx.id===activeFixtureId;
-      const detail=[fx.time?'KO: '+fx.time:null, fx.date, fx.halfDuration?fx.halfDuration*2+'min':null, fx.venue, fx.comp].filter(Boolean).join(' · ');
-      const badge=fx.finished?'<span class="fx-badge ft">FT</span>':fx.running?'<span class="fx-badge live">Live</span>':'';
-      return '<div class="fixture-row'+(isActive?' active-fixture':'')+' ">'
-        +'<div class="fixture-left-content">'+getLogoHtml(fx.logo1)+'<div><div class="fixture-teams">'+fx.team1+' vs '+fx.team2
-        +' <span style="font-family:var(--font-mono);font-size:13px;color:var(--color-text2)">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span></div>'
-        +(detail?'<div class="fixture-detail">'+detail+'</div>':'')+'</div></div>'
-        +'<div class="fixture-actions">'+badge
-        +'<button class="fx-action-btn" onclick="openEditPanel('+fx.id+')" title="Edit">✏️</button>'
-        +'<button class="fx-action-btn del" onclick="deleteFixture('+fx.id+')" title="Delete">🗑️</button>'
-        +'</div></div>';
-    }).join('');
+
+    const { upcomingGroups, pastGroups } = getGroupedFixtures(fixtures);
+    let html = '';
+
+    if (upcomingGroups.length > 0) {
+      html += `<div class="group-section-title">Upcoming / Live Fixtures</div>`;
+      upcomingGroups.forEach(g => {
+        const groupKey = `setup-upcoming-${g.competition}-${g.date}`;
+        let itemsHTML = '';
+        g.items.forEach(fx => {
+          const isActive = fx.id === activeFixtureId;
+          const detail = [fx.time ? 'KO: ' + fx.time : null, fx.halfDuration ? fx.halfDuration*2+'min' : null, fx.venue].filter(Boolean).join(' · ');
+          const badge = fx.running ? '<span class="fx-badge live">Live</span>' : '';
+          itemsHTML += `
+            <div class="fixture-row ${isActive ? 'active-fixture' : ''}">
+              <div class="fixture-left-content">
+                ${getLogoHtml(fx.logo1)}
+                <div>
+                  <div class="fixture-teams">${fx.team1} vs ${fx.team2} 
+                    <span style="font-family:var(--font-mono);font-size:13px;color:var(--color-text2)">${fx.score1 || 0} – ${fx.score2 || 0}</span>
+                  </div>
+                  ${detail ? `<div class="fixture-detail">${detail}</div>` : ''}
+                </div>
+              </div>
+              <div class="fixture-actions">
+                ${badge}
+                <button class="fx-action-btn" onclick="openEditPanel(${fx.id})" title="Edit">✏️</button>
+                <button class="fx-action-btn del" onclick="deleteFixture(${fx.id})" title="Delete">🗑️</button>
+              </div>
+            </div>`;
+        });
+        html += buildCollapsibleGroupHTML(groupKey, `${g.competition} (${g.date})`, itemsHTML, g.items.length);
+      });
+    }
+
+    if (pastGroups.length > 0) {
+      html += `<div class="group-section-title past">Past Matches</div>`;
+      pastGroups.forEach(g => {
+        const groupKey = `setup-past-${g.competition}-${g.date}`;
+        let itemsHTML = '';
+        g.items.forEach(fx => {
+          const isActive = fx.id === activeFixtureId;
+          const detail = [fx.time ? 'KO: ' + fx.time : null, fx.venue].filter(Boolean).join(' · ');
+          itemsHTML += `
+            <div class="fixture-row ${isActive ? 'active-fixture' : ''}">
+              <div class="fixture-left-content">
+                ${getLogoHtml(fx.logo1)}
+                <div>
+                  <div class="fixture-teams">${fx.team1} vs ${fx.team2} 
+                    <span style="font-family:var(--font-mono);font-size:13px;color:var(--color-text2)">${fx.score1 || 0} – ${fx.score2 || 0}</span>
+                  </div>
+                  ${detail ? `<div class="fixture-detail">${detail}</div>` : ''}
+                </div>
+              </div>
+              <div class="fixture-actions">
+                <span class="fx-badge ft">FT</span>
+                <button class="fx-action-btn" onclick="openEditPanel(${fx.id})" title="Edit">✏️</button>
+                <button class="fx-action-btn del" onclick="deleteFixture(${fx.id})" title="Delete">🗑️</button>
+              </div>
+            </div>`;
+        });
+        html += buildCollapsibleGroupHTML(groupKey, `${g.competition} (${g.date})`, itemsHTML, g.items.length);
+      });
+    }
+
+    el.innerHTML = html;
   }
 
   function openEditPanel(id) {
@@ -1010,16 +1246,62 @@
   function renderSpecFixtureList(){
     const el=document.getElementById('spec-fixture-list');
     if(!fixtures.length){el.innerHTML='<div class="empty-fixtures">No fixtures scheduled yet</div>';return;}
-    el.innerHTML=fixtures.map(fx=>{
-      const isSelected=fx.id===specViewingId;
-      const detail=[fx.time ? '⏰ ' + fx.time : null, fx.date, fx.halfDuration?fx.halfDuration*2+'min':null, fx.venue].filter(Boolean).join(' · ');
-      const liveDot=fx.running?'<span class="live-dot"></span> ':'';
-      const score='<span style="font-family:var(--font-mono);font-size:14px;font-weight:700;">'+(fx.score1||0)+' – '+(fx.score2||0)+'</span>';
-      const badge=fx.finished?'<span class="fx-badge ft" style="margin-right:4px">FT</span>':'';
-      return '<div class="spec-fixture-btn'+(isSelected?' selected':'')+' "onclick="specSelectFixture('+fx.id+')">'
-        +'<div class="spec-left-side">'+getLogoHtml(fx.logo1)+'<div><div class="spec-fx-teams">'+liveDot+fx.team1+' vs '+fx.team2+'</div>'+(detail?'<div class="spec-fx-detail">'+detail+'</div>':'')+'</div></div>'
-        +'<div style="display:flex;align-items:center;gap:6px;">'+badge+score+'</div></div>';
-    }).join('');
+
+    const { upcomingGroups, pastGroups } = getGroupedFixtures(fixtures);
+    let html = '';
+
+    if (upcomingGroups.length > 0) {
+      html += `<div class="group-section-title">Live / Upcoming Matches</div>`;
+      upcomingGroups.forEach(g => {
+        const groupKey = `spec-upcoming-${g.competition}-${g.date}`;
+        let itemsHTML = '';
+        g.items.forEach(fx => {
+          const isSelected = fx.id === specViewingId;
+          const detail = [fx.time ? '⏰ ' + fx.time : null, fx.halfDuration ? fx.halfDuration*2+'min' : null, fx.venue].filter(Boolean).join(' · ');
+          const liveDot = fx.running ? '<span class="live-dot"></span> ' : '';
+          const score = `<span style="font-family:var(--font-mono);font-size:14px;font-weight:700;">${fx.score1 || 0} – ${fx.score2 || 0}</span>`;
+          itemsHTML += `
+            <div class="spec-fixture-btn ${isSelected ? 'selected' : ''}" onclick="specSelectFixture(${fx.id})">
+              <div class="spec-left-side">
+                ${getLogoHtml(fx.logo1)}
+                <div>
+                  <div class="spec-fx-teams">${liveDot}${fx.team1} vs ${fx.team2}</div>
+                  ${detail ? `<div class="spec-fx-detail">${detail}</div>` : ''}
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">${score}</div>
+            </div>`;
+        });
+        html += buildCollapsibleGroupHTML(groupKey, `${g.competition} (${g.date})`, itemsHTML, g.items.length);
+      });
+    }
+
+    if (pastGroups.length > 0) {
+      html += `<div class="group-section-title past">Past Results</div>`;
+      pastGroups.forEach(g => {
+        const groupKey = `spec-past-${g.competition}-${g.date}`;
+        let itemsHTML = '';
+        g.items.forEach(fx => {
+          const isSelected = fx.id === specViewingId;
+          const detail = [fx.time ? '⏰ ' + fx.time : null, fx.venue].filter(Boolean).join(' · ');
+          const score = `<span style="font-family:var(--font-mono);font-size:14px;font-weight:700;">${fx.score1 || 0} – ${fx.score2 || 0}</span>`;
+          itemsHTML += `
+            <div class="spec-fixture-btn ${isSelected ? 'selected' : ''}" onclick="specSelectFixture(${fx.id})">
+              <div class="spec-left-side">
+                ${getLogoHtml(fx.logo1)}
+                <div>
+                  <div class="spec-fx-teams">${fx.team1} vs ${fx.team2}</div>
+                  ${detail ? `<div class="spec-fx-detail">${detail}</div>` : ''}
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;"><span class="fx-badge ft" style="margin-right:4px">FT</span>${score}</div>
+            </div>`;
+        });
+        html += buildCollapsibleGroupHTML(groupKey, `${g.competition} (${g.date})`, itemsHTML, g.items.length);
+      });
+    }
+
+    el.innerHTML = html;
   }
 
   function specSelectFixture(id){
