@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Rugby Match Scorer</title>
+<title>Laerskool Unika Rugby</title>
 <style>
   /* DEFAULT LIGHT THEME (Matches light device setups) */
   :root {
@@ -118,7 +118,7 @@
   
   /* PLAYER PICKER SCORER DROPDOWN */
   .player-assign-box { background: var(--color-surface2); border: 1px solid var(--color-info-border); border-radius: var(--radius-sm); padding: 8px; width: 100%; display: none; margin-top: 4px; flex-direction: column; gap: 6px; text-align: left; }
-  .player-assign-label { font-size: 11px; font-weight: 600; color: var(--color-info); }
+  .player-assign-box { font-size: 11px; font-weight: 600; color: var(--color-info); }
   .player-select { font-size: 12px; background: var(--color-surface); border: 1px solid var(--color-border2); border-radius: 4px; color: var(--color-text); padding: 5px; width: 100%; outline: none; }
 
   /* KICK OUTCOME SELECTION BOX */
@@ -223,7 +223,7 @@
   .spec-back-btn { background: var(--color-surface2); border: 1px solid var(--color-border2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 1.25rem; }
   .spec-back-btn:hover { background: var(--color-border2); }
 
-  /* NEW FIXTURE ACCORDION GROUPING STYLES */
+  /* FIXTURE ACCORDION GROUPING STYLES */
   .fixture-group-container {
     margin-bottom: 12px;
     border: 1px solid var(--color-border);
@@ -855,8 +855,12 @@
   function endHalfManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    const hd=(fx.halfDuration||40)*60;
     
+    // Explicit confirmation string check depending on half context
+    const actionLabel = fx.half === 1 ? "Half Time" : "Full Time";
+    if (!confirm(`Are you sure you want to manually declare ${actionLabel} for this match?`)) return;
+
+    const hd=(fx.halfDuration||40)*60;
     if(!fx.events) fx.events = [];
     
     let calculatedSeconds = fx.seconds || 0;
@@ -889,7 +893,7 @@
   function endGameManually(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
-    if(!confirm('Are you sure you want to declare Full Time for this game?'))return;
+    if(!confirm('Are you sure you want to permanently declare Full Time and end this game?'))return;
     const hd=(fx.halfDuration||40)*60;
     
     let calculatedSeconds = fx.seconds || 0;
@@ -913,6 +917,7 @@
   function resetTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
+    if(!confirm('Are you sure you want to shift or reset the structural half configurations?')) return;
     const hd=(fx.halfDuration||40)*60;
     if(fx.finished){
       fx.finished=false;
@@ -935,7 +940,7 @@
   function confirmReset(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
-    if(!confirm('Reset all scores, timer and events for this match?'))return;
+    if(!confirm('CRITICAL WARNING: This will reset all scores, timeline events, and match clock back to zero for this fixture. Continue?'))return;
     fx.score1=0;fx.score2=0;fx.seconds=0;fx.half=1;fx.events=[];fx.running=false;fx.finished=false;fx.halfTime=false;fx.timerStartTime=null;
     db.ref('fixtures/' + fx.id).update(fx);
   }
