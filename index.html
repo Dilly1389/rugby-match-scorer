@@ -399,24 +399,31 @@
 
   function pad(n){return String(n).padStart(2,'0');}
   
-  function fxTime(fx){
-    let halfSec = (fx.halfDuration || 40) * 60;
-    if (fx.finished) return "00:00";
-    
+  function fxElapsedSeconds(fx){
     let elapsedSeconds = fx.seconds || 0;
     if (fx.running && fx.timerStartTime) {
       let currentServerTime = Date.now() + serverTimeOffset;
       let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
       elapsedSeconds += realTimeDelta;
     }
+    return elapsedSeconds;
+  }
 
-    let secLeft = 0;
-    if (fx.half === 1) {
-      secLeft = Math.max(0, halfSec - elapsedSeconds);
-    } else {
-      secLeft = Math.max(0, (halfSec * 2) - elapsedSeconds);
+  function fxTime(fx){
+    if (fx.finished) {
+      const total = fx.seconds || 0;
+      return pad(Math.floor(total / 60)) + ':' + pad(total % 60);
     }
-    return pad(Math.floor(secLeft / 60)) + ':' + pad(secLeft % 60);
+    const elapsedSeconds = fxElapsedSeconds(fx);
+    return pad(Math.floor(elapsedSeconds / 60)) + ':' + pad(elapsedSeconds % 60);
+  }
+
+  // True once the current half has gone past its allotted duration (added time)
+  function fxIsOverHalfTime(fx){
+    if (fx.finished) return false;
+    const halfSec = (fx.halfDuration || 40) * 60;
+    const elapsedSeconds = fxElapsedSeconds(fx);
+    return elapsedSeconds >= halfSec;
   }
 
   function fxRealTime(fx) {
@@ -526,13 +533,14 @@
     const fx=getActiveFx();
     if(!fx){area.innerHTML='<div class="no-fixture-selected"><span>⬆️</span>Select a fixture above to start scoring</div>';return;}
     const t=fxTime(fx);
+    const timerColor = fxIsOverHalfTime(fx) ? 'var(--color-danger)' : '';
     const halfLabel=fx.finished?'Match Ended':(fx.half===1?'1st Half':'2nd Half');
     const htDisplay=fx.halfTime?'block':'none';
     const durInfo=fx.halfDuration?fx.halfDuration*2+' min match ('+fx.halfDuration+' min halves)':'';
     area.innerHTML=`
       <div class="match-header">
         <div class="match-title">${fx.comp||'Rugby Union'}</div>
-        <div class="timer-display" id="timer">${t}</div>
+        <div class="timer-display" id="timer" style="color:${timerColor}">${t}</div>
         <div class="half-label" id="half-label">${halfLabel}</div>
         ${durInfo?'<div class="duration-info">'+durInfo+'</div>':''}
       </div>
@@ -632,43 +640,19 @@
   if(!interval){
     interval = setInterval(() => {
       fixtures.forEach(fx => {
-        if(fx.running && !fx.finished) {
-          const hd = (fx.halfDuration || 40) * 60;
-          let currentServerTime = Date.now() + serverTimeOffset;
-          let realTimeDelta = Math.floor((currentServerTime - (fx.timerStartTime || currentServerTime)) / 1000);
-          let elapsedSeconds = (fx.seconds || 0) + realTimeDelta;
-          
-          if(elapsedSeconds >= hd && fx.half === 1 && !fx.halfTime) {
-            if (checkAdminAccess) {
-              fx.halfTime = true;
-              fx.running = false;
-              fx.seconds = hd;
-              fx.timerStartTime = null;
-              if(!fx.events) fx.events=[];
-              fx.events.push({team:'Match', type:'Half time called', time:pad(fx.halfDuration)+':00'});
-              db.ref('fixtures/' + fx.id).update({ running: false, halfTime: true, seconds: hd, timerStartTime: null, events: fx.events });
-            }
-          }
-          if(elapsedSeconds >= (hd * 2) && !fx.finished) {
-            if (checkAdminAccess) {
-              fx.finished = true;
-              fx.running = false;
-              fx.seconds = hd * 2;
-              fx.timerStartTime = null;
-              if(!fx.events) fx.events=[];
-              fx.events.push({team:'Match', type:'Full time!', time:pad(fx.halfDuration * 2)+':00'});
-              db.ref('fixtures/' + fx.id).update({ running: false, finished: true, seconds: hd * 2, timerStartTime: null, events: fx.events });
-            }
-          }
-        }
-
         if(fx.id === activeFixtureId) {
           const timerEl = document.getElementById('timer');
-          if(timerEl) timerEl.textContent = fxTime(fx);
+          if(timerEl) {
+            timerEl.textContent = fxTime(fx);
+            timerEl.style.color = fxIsOverHalfTime(fx) ? 'var(--color-danger)' : '';
+          }
         }
         if(fx.id === specViewingId) {
           const specTimerEl = document.getElementById('spec-timer');
-          if(specTimerEl) specTimerEl.textContent = fxTime(fx);
+          if(specTimerEl) {
+            specTimerEl.textContent = fxTime(fx);
+            specTimerEl.style.color = fxIsOverHalfTime(fx) ? 'var(--color-danger)' : '';
+          }
         }
       });
     }, 500);
@@ -679,7 +663,6 @@
     const fx=getActiveFx();if(!fx||fx.finished)return;
     
     let isRunning = !fx.running;
-    let hd = (fx.halfDuration || 40) * 60;
     
     if(!fx.events) fx.events = [];
 
@@ -690,8 +673,7 @@
       if(fx.halfTime && fx.half === 1) {
         fx.half = 2;
         fx.halfTime = false;
-        fx.seconds = hd;
-        fx.events.push({team:'Match', type:'2nd Half started', time:pad(fx.halfDuration)+':00'});
+        fx.events.push({team:'Match', type:'2nd Half started', time:pad(Math.floor((fx.seconds||0) / 60)) + ':' + pad((fx.seconds||0) % 60)});
       }
       fx.timerStartTime = Date.now() + serverTimeOffset;
     } else {
@@ -722,7 +704,6 @@
       : 'Are you sure you want to end the 2nd Half and call Full Time?';
     if(!confirm(confirmMsg)) return;
 
-    const hd=(fx.halfDuration||40)*60;
     if(!fx.events) fx.events = [];
     
     let calculatedSeconds = fx.seconds || 0;
@@ -731,19 +712,18 @@
       let realTimeDelta = Math.floor((currentServerTime - fx.timerStartTime) / 1000);
       calculatedSeconds += realTimeDelta;
     }
+    let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
 
     if(fx.half===1){
-      let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
       fx.halfTime=true;
       fx.running=false;
-      fx.seconds=hd; 
+      fx.seconds=0;
       fx.timerStartTime = null;
       fx.events.push({team:'Match', type:'Half time called', time: timeStampStr});
     } else {
-      let timeStampStr = pad(Math.floor(calculatedSeconds / 60)) + ':' + pad(calculatedSeconds % 60);
       fx.finished=true;
       fx.running=false;
-      fx.seconds=hd*2;
+      fx.seconds=calculatedSeconds;
       fx.timerStartTime = null;
       fx.events.push({team:'Match', type:'Full time called', time: timeStampStr});
     }
@@ -754,7 +734,6 @@
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx||fx.finished)return;
     if(!confirm('Are you sure you want to declare Full Time for this game?'))return;
-    const hd=(fx.halfDuration||40)*60;
     
     let calculatedSeconds = fx.seconds || 0;
     if (fx.running && fx.timerStartTime) {
@@ -767,7 +746,7 @@
     fx.finished=true;
     fx.running=false;
     fx.halfTime=false;
-    fx.seconds=hd*2;
+    fx.seconds=calculatedSeconds;
     fx.timerStartTime = null;
     if(!fx.events) fx.events=[];
     fx.events.push({team:'Match', type:'Full time!', time: timeStampStr});
@@ -777,14 +756,13 @@
   function resetTimer(){
     if(!checkAdminAccess()) return;
     const fx=getActiveFx();if(!fx)return;
-    const hd=(fx.halfDuration||40)*60;
     if(fx.finished){
       fx.finished=false;
       fx.half=2;
-      fx.seconds=hd;
+      fx.seconds=0;
     }else if(fx.halfTime || fx.half===1){
       fx.half=2;
-      fx.seconds=hd;
+      fx.seconds=0;
       fx.halfTime=false;
     }else{
       fx.half=1;
@@ -1170,7 +1148,9 @@
 
   function renderSpecPanel(){
     const fx=fixtures.find(f=>f.id===specViewingId);if(!fx)return;
-    document.getElementById('spec-timer').textContent=fxTime(fx);
+    const specTimerEl = document.getElementById('spec-timer');
+    specTimerEl.textContent=fxTime(fx);
+    specTimerEl.style.color = fxIsOverHalfTime(fx) ? 'var(--color-danger)' : '';
     document.getElementById('spec-half').textContent=fx.finished?'Match Ended':(fx.half===1?'1st Half':'2nd Half');
     document.getElementById('spec-score1').textContent=fx.score1||0;
     document.getElementById('spec-score2').textContent=fx.score2||0;
@@ -1225,7 +1205,10 @@
         const currentFx = getActiveFx();
         if(currentFx) {
           const timerEl = document.getElementById('timer');
-          if(timerEl) timerEl.textContent = fxTime(currentFx);
+          if(timerEl) {
+            timerEl.textContent = fxTime(currentFx);
+            timerEl.style.color = fxIsOverHalfTime(currentFx) ? 'var(--color-danger)' : '';
+          }
           
           const s1 = document.getElementById('score1');
           if(s1) s1.textContent = currentFx.score1 || 0;
